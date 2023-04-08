@@ -236,6 +236,9 @@ linters-settings:
       - "func github.com/sociosarbis/grpc/boilerplate/internal/web/res.Ok[T any]("
       - "func github.com/sociosarbis/grpc/boilerplate/internal/web/res.BadRequest("
       - "func github.com/sociosarbis/grpc/boilerplate/internal/web/res.InternalError("
+      - "func github.com/sociosarbis/grpc/boilerplate/internal/web/res.NotFound("
+      - "func google.golang.org/grpc/status.Errorf("
+      - "func (*github.com/dgrijalva/jwt-go.Token).SignedString("
 
   nlreturn:
     block-size: 3

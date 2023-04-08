@@ -5,6 +5,7 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
+	"go.uber.org/zap"
 
 	"github.com/sociosarbis/grpc/boilerplate/internal/errcode"
 	"github.com/sociosarbis/grpc/boilerplate/internal/grpcmod"
@@ -47,6 +48,7 @@ func (u *User) Detail(ctx *fiber.Ctx) error {
 	})
 
 	if err != nil {
+		u.common.Logger.Error("client.User.UserDetail", zap.Error(err))
 		return res.InternalError(ctx, errcode.Unknown, "client.User.UserDetail")
 	}
 	return res.Ok(ctx, r)

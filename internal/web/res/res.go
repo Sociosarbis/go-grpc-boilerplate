@@ -34,6 +34,10 @@ func BadRequest(ctx *fiber.Ctx, code int, msg string) error {
 	return Err(ctx, http.StatusBadRequest, code, msg)
 }
 
+func NotFound(ctx *fiber.Ctx, code int, msg string) error {
+	return Err(ctx, http.StatusNotFound, code, msg)
+}
+
 func InternalError(ctx *fiber.Ctx, code int, msg string) error {
 	return Err(ctx, http.StatusInternalServerError, code, msg)
 }

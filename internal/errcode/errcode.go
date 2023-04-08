@@ -1,5 +1,6 @@
 package errcode
 
 const (
-	Unknown = iota + 1
+	Unknown  = iota + 1
+	NotFound = 404
 )

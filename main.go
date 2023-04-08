@@ -13,6 +13,7 @@ import (
 	"github.com/sociosarbis/grpc/boilerplate/internal/dal"
 	"github.com/sociosarbis/grpc/boilerplate/internal/driver"
 	"github.com/sociosarbis/grpc/boilerplate/internal/grpcmod"
+	"github.com/sociosarbis/grpc/boilerplate/internal/jwtgo"
 	"github.com/sociosarbis/grpc/boilerplate/internal/pkg/errgo"
 	"github.com/sociosarbis/grpc/boilerplate/internal/pkg/logger"
 	"github.com/sociosarbis/grpc/boilerplate/internal/web"
@@ -33,7 +34,7 @@ func start() error {
 	err := fx.New(
 		fx.NopLogger,
 		config.Module,
-		fx.Provide(driver.NewMysqlConnectionPool),
+		fx.Provide(logger.Copy, driver.NewMysqlConnectionPool, jwtgo.NewJWTManager),
 		web.Module,
 		dal.Module,
 		grpcmod.Module,

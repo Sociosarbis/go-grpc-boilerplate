@@ -30,6 +30,10 @@ func setup() *zap.Logger {
 
 var logger = setup() //nolint:gochecknoglobals
 
+func Copy() *zap.Logger {
+	return logger.WithOptions(zap.AddCallerSkip(-1))
+}
+
 func Fatal(msg string, fields ...zap.Field) {
 	logger.Fatal(msg, fields...)
 }
