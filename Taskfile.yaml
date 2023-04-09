@@ -1,0 +1,9 @@
+version: "3"
+includes:
+  mock: ./etc/mock.task.yaml
+
+tasks:
+  mock:
+    desc: Generate Mocks.
+    deps:
+      - mock:all

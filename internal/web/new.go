@@ -2,8 +2,10 @@ package web
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 
 	"github.com/sociosarbis/grpc/boilerplate/internal/config"
@@ -14,6 +16,8 @@ import (
 	"github.com/sociosarbis/grpc/boilerplate/internal/web/middleware"
 	"github.com/sociosarbis/grpc/boilerplate/internal/web/res"
 )
+
+const throttleTime = time.Second
 
 func Start(c config.AppConfig, app *fiber.App) error {
 	addr := c.ListenAddr()
@@ -31,15 +35,40 @@ func New(userHandler *handler.User) *fiber.App {
 
 	app.Use(recover.New())
 
+	AddRouters(app, userHandler)
+
+	return app
+}
+
+func NewTestApp(userHandler *handler.User) *fiber.App {
+	app := fiber.New(fiber.Config{
+		DisableStartupMessage: true,
+		StrictRouting:         true,
+		CaseSensitive:         true,
+	})
+
+	AddRouters(app, userHandler)
+
+	return app
+}
+
+func AddRouters(app *fiber.App, userHandler *handler.User) {
+
+	perRequestLimiterMiddleware := limiter.New(limiter.Config{
+		Max:        1,
+		Expiration: throttleTime,
+		KeyGenerator: func(c *fiber.Ctx) string {
+			return fmt.Sprintf("%s?ip=%s", c.Route().Path, c.IP())
+		},
+	})
+
 	app.Use(middleware.AttachToken)
 
 	router := app.Group("/api")
 
-	router.Get("/user/:id", userHandler.Detail)
+	router.Get("/user/:id", perRequestLimiterMiddleware, userHandler.Detail)
 
 	app.Use(func(ctx *fiber.Ctx) error {
 		return res.NotFound(ctx, errcode.NotFound, "Not Found")
 	})
-
-	return app
 }

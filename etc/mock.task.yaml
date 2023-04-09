@@ -1,0 +1,25 @@
+version: "3"
+
+tasks:
+  all:
+    - task: gen
+
+  gen:
+    cmds:
+      - task: user-proto
+
+  base-mock:
+    cmds:
+      - cmd: mockery --dir {{.SRC_DIR}} --filename '{{.MOCK_STRUCT|default .INTERFACE}}.go' --name '{{.INTERFACE | default "Manager"}}' --structname {{.MOCK_STRUCT|default .INTERFACE}} --output ./internal/mocks --with-expecter
+
+  user-proto:
+    sources:
+      - ./proto/user_grpc.pb.go
+    generates:
+      - internal/mocks/UserGrpcClient.go
+    cmds:
+      - task: base-mock
+        vars:
+          SRC_DIR: ./proto
+          INTERFACE: UserServiceClient
+          MOCK_STRUCT: "UserServiceClient"
