@@ -1,10 +1,7 @@
 package handler_test
 
 import (
-	"encoding/json"
-	"io"
 	"net/http"
-	"net/http/httptest"
 	"testing"
 
 	"github.com/sociosarbis/grpc/boilerplate/internal/grpcmod"
@@ -33,21 +30,15 @@ func TestUserDetail(t *testing.T) {
 		GrpcClient: grpcClient,
 	})
 
-	r, err := app.Test(httptest.NewRequest("GET", "/api/user/1", http.NoBody))
+	r, err := app.Test(test.NewRequest(t, "/api/user/1").Get().Build())
 
-	r2, _ := app.Test(httptest.NewRequest("GET", "/api/user/1", http.NoBody))
+	r2, _ := app.Test(test.NewRequest(t, "/api/user/1").Get().Build())
 
 	require.NoError(t, err)
 
 	require.Equal(t, r2.StatusCode, http.StatusTooManyRequests)
 
-	detailWebRes := res.Response[proto.UserDetailRes]{}
+	data := test.ReadJSONResponse(t, r, &res.Response[proto.UserDetailRes]{})
 
-	data, err := io.ReadAll(r.Body)
-
-	err = json.Unmarshal(data, &detailWebRes)
-
-	require.NoError(t, err)
-
-	require.Equal(t, detailWebRes.Data.Id, uint32(1))
+	require.Equal(t, data.Data.Id, uint32(1))
 }
