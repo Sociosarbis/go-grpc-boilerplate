@@ -23,6 +23,7 @@ type Request struct {
 }
 
 func NewRequest(t *testing.T, path string) *Request {
+	t.Helper()
 	return &Request{
 		t:       t,
 		Method:  "",
@@ -61,9 +62,11 @@ func (req *Request) JSON(data map[string]any) *Request {
 func (req *Request) Build() *http.Request {
 	urlObj, err := url.Parse(req.Path)
 	require.NoError(req.t, err)
+	queryObj := urlObj.Query()
 	for k, v := range req.Params {
-		urlObj.Query().Add(k, fmt.Sprintf("%s", v))
+		queryObj.Add(k, fmt.Sprintf("%s", v))
 	}
+	urlObj.RawQuery = queryObj.Encode()
 	httpReq := httptest.NewRequest(req.Method, urlObj.String(), http.NoBody)
 	if len(req.Data) != 0 {
 		httpReq.Body = io.NopCloser(bytes.NewReader(req.Data))
@@ -75,6 +78,7 @@ func (req *Request) Build() *http.Request {
 }
 
 func ReadJSONResponse[T any](t *testing.T, res *http.Response, out *T) *T {
+	t.Helper()
 
 	data, err := io.ReadAll(res.Body)
 

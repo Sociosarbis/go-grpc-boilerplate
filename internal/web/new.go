@@ -53,7 +53,6 @@ func NewTestApp(userHandler *handler.User) *fiber.App {
 }
 
 func AddRouters(app *fiber.App, userHandler *handler.User) {
-
 	perRequestLimiterMiddleware := limiter.New(limiter.Config{
 		Max:        1,
 		Expiration: throttleTime,

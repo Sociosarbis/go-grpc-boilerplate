@@ -2,9 +2,10 @@ package test
 
 import (
 	"testing"
-	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"go.uber.org/fx"
+
 	"github.com/sociosarbis/grpc/boilerplate/internal/config"
 	"github.com/sociosarbis/grpc/boilerplate/internal/dal"
 	"github.com/sociosarbis/grpc/boilerplate/internal/grpcmod"
@@ -13,16 +14,14 @@ import (
 	"github.com/sociosarbis/grpc/boilerplate/internal/web"
 	"github.com/sociosarbis/grpc/boilerplate/internal/web/handler"
 	"github.com/sociosarbis/grpc/boilerplate/internal/web/handler/common"
-	"go.uber.org/fx"
 )
 
 type Mock struct {
 	GrpcClient *grpcmod.Client
 }
 
-const throttleTime = time.Second
-
 func GetWebApp(tb testing.TB, m Mock) *fiber.App {
+	tb.Helper()
 	var app *fiber.App
 
 	err := fx.New(

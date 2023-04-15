@@ -21,6 +21,7 @@ func New(handler handler.Handler, authInterceptor *interceptor.AuthInterceptor) 
 
 	srv := grpc.NewServer(
 		grpc.UnaryInterceptor(authInterceptor.Auth),
+		grpc.StreamInterceptor(authInterceptor.AuthStream),
 	)
 
 	srvImpl := server{

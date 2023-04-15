@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/sociosarbis/grpc/boilerplate/internal/pkg/errgo"
 	"github.com/spf13/cobra"
+
+	"github.com/sociosarbis/grpc/boilerplate/internal/pkg/errgo"
 )
 
 var Command = &cobra.Command{

@@ -4,13 +4,14 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/require"
+
 	"github.com/sociosarbis/grpc/boilerplate/internal/grpcmod"
 	"github.com/sociosarbis/grpc/boilerplate/internal/mocks"
 	"github.com/sociosarbis/grpc/boilerplate/internal/pkg/test"
 	"github.com/sociosarbis/grpc/boilerplate/internal/web/res"
 	"github.com/sociosarbis/grpc/boilerplate/proto"
-	"github.com/stretchr/testify/mock"
-	"github.com/stretchr/testify/require"
 )
 
 func TestUserDetail(t *testing.T) {

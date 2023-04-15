@@ -6,8 +6,9 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/sociosarbis/grpc/boilerplate/internal/grpcmod/handler"
 	"github.com/stretchr/testify/require"
+
+	"github.com/sociosarbis/grpc/boilerplate/internal/grpcmod/handler"
 )
 
 func getCmd(t *testing.T) *handler.Cmd {
@@ -16,6 +17,7 @@ func getCmd(t *testing.T) *handler.Cmd {
 }
 
 func TestCmdStart(t *testing.T) {
+	t.Parallel()
 	cmd := getCmd(t)
 	_, stdout, stderr, err := cmd.Start("ls")
 	require.NoError(t, err)
@@ -58,11 +60,8 @@ func TestCmdStart(t *testing.T) {
 	}()
 
 	go func() {
-		for {
-			select {
-			case buf := <-outChan:
-				fmt.Printf("%s", buf)
-			}
+		for buf := range outChan {
+			fmt.Printf("%s", buf)
 		}
 	}()
 	wg.Wait()

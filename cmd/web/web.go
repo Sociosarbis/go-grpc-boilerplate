@@ -2,6 +2,12 @@ package web
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/spf13/cobra"
+	"go.uber.org/dig"
+	"go.uber.org/fx"
+	"google.golang.org/grpc"
+	"gorm.io/gorm"
+
 	"github.com/sociosarbis/grpc/boilerplate/internal/config"
 	"github.com/sociosarbis/grpc/boilerplate/internal/dal"
 	"github.com/sociosarbis/grpc/boilerplate/internal/driver"
@@ -10,11 +16,6 @@ import (
 	"github.com/sociosarbis/grpc/boilerplate/internal/pkg/errgo"
 	"github.com/sociosarbis/grpc/boilerplate/internal/pkg/logger"
 	"github.com/sociosarbis/grpc/boilerplate/internal/web"
-	"github.com/spf13/cobra"
-	"go.uber.org/dig"
-	"go.uber.org/fx"
-	"google.golang.org/grpc"
-	"gorm.io/gorm"
 )
 
 var Command = &cobra.Command{

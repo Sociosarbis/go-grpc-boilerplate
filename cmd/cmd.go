@@ -1,9 +1,10 @@
 package cmd
 
 import (
+	"github.com/spf13/cobra"
+
 	"github.com/sociosarbis/grpc/boilerplate/cmd/ui"
 	"github.com/sociosarbis/grpc/boilerplate/cmd/web"
-	"github.com/spf13/cobra"
 )
 
 var Root = cobra.Command{
