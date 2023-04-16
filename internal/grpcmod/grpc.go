@@ -10,6 +10,7 @@ import (
 
 type server struct {
 	proto.UnimplementedUserServiceServer
+	proto.UnimplementedCmdServiceServer
 	handler handler.Handler
 }
 
@@ -19,4 +20,12 @@ func (s *server) UserDetail(ctx context.Context, req *proto.UserDetailReq) (*pro
 		return nil, errgo.Wrap(err, "server.Detail")
 	}
 	return res, nil
+}
+
+func (s *server) CmdCall(cmdReq *proto.Cmd, srv proto.CmdService_CmdCallServer) error {
+	err := s.handler.Cmd.Call(cmdReq, srv)
+	if err != nil {
+		return errgo.Wrap(err, "server.Call")
+	}
+	return nil
 }

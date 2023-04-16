@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package proto;
+
+option go_package = "/proto";
+
+message Cmd {
+  string script = 1;
+}
+
+message CmdCallRes {
+  string output = 1;
+  int32 type = 2;
+}
+
+
+
+service CmdService {
+  rpc CmdCall(Cmd) returns(stream CmdCallRes);
+}

@@ -26,6 +26,7 @@ func New(handler handler.Handler, authInterceptor *interceptor.AuthInterceptor) 
 
 	srvImpl := server{
 		proto.UnimplementedUserServiceServer{},
+		proto.UnimplementedCmdServiceServer{},
 		handler,
 	}
 

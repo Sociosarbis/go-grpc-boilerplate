@@ -10,6 +10,7 @@ import (
 
 type Client struct {
 	User proto.UserServiceClient
+	Cmd  proto.CmdServiceClient
 }
 
 func NewClient() (*Client, error) {
@@ -21,6 +22,8 @@ func NewClient() (*Client, error) {
 	var client Client
 
 	client.User = proto.NewUserServiceClient(conn)
+
+	client.Cmd = proto.NewCmdServiceClient(conn)
 
 	return &client, nil
 }

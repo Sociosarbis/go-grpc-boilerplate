@@ -1,9 +1,12 @@
 package res
 
 import (
+	"encoding/json"
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"
+
+	"github.com/sociosarbis/grpc/boilerplate/internal/pkg/errgo"
 )
 
 type Response[T any] struct {
@@ -40,4 +43,16 @@ func NotFound(ctx *fiber.Ctx, code int, msg string) error {
 
 func InternalError(ctx *fiber.Ctx, code int, msg string) error {
 	return Err(ctx, http.StatusInternalServerError, code, msg)
+}
+
+func WriteJSON[T any](ctx *fiber.Ctx, msg T) error {
+	data, err := json.Marshal(msg)
+	if err != nil {
+		return errgo.Wrap(err, "json.Marshal")
+	}
+	_, err = ctx.Write(data)
+	if err != nil {
+		return errgo.Wrap(err, "ctx.Write")
+	}
+	return nil
 }
