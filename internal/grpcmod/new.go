@@ -32,6 +32,8 @@ func New(handler handler.Handler, authInterceptor *interceptor.AuthInterceptor) 
 
 	proto.RegisterUserServiceServer(srv, &srvImpl)
 
+	proto.RegisterCmdServiceServer(srv, &srvImpl)
+
 	go func() {
 		err = srv.Serve(lis)
 		if err != nil {

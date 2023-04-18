@@ -47,6 +47,7 @@ func (u *Cmd) Call(ctx *fiber.Ctx) error {
 	}
 	r, err := u.client.Cmd.CmdCall(ctx.UserContext(), &proto.Cmd{
 		Script: params.Script,
+		Wd:     params.Wd,
 	})
 
 	if err != nil {
@@ -58,6 +59,7 @@ func (u *Cmd) Call(ctx *fiber.Ctx) error {
 		msg, revErr := r.Recv()
 		if revErr == nil {
 			writeErr := res.WriteJSON(ctx, msg)
+			ctx.Write([]byte("\n"))
 			if writeErr != nil {
 				u.common.Logger.Error("res.WriteJSON", zap.Error(writeErr))
 				err = writeErr
@@ -68,8 +70,8 @@ func (u *Cmd) Call(ctx *fiber.Ctx) error {
 			break
 		}
 	}
-	if errors.Is(err, io.EOF) {
-		u.common.Logger.Error("json.Marshal", zap.Error(err))
+	if !errors.Is(err, io.EOF) {
+		u.common.Logger.Error("client.Recv", zap.Error(err))
 		return res.InternalError(ctx, http.StatusInternalServerError, "Cmd.CmdCall")
 	}
 	return nil

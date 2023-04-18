@@ -26,7 +26,7 @@ func Start(c config.AppConfig, app *fiber.App) error {
 	return errgo.Wrap(app.Listen(c.ListenAddr()), "fiber.App.Listen")
 }
 
-func New(userHandler *handler.User) *fiber.App {
+func New(userHandler *handler.User, cmdHandler *handler.Cmd) *fiber.App {
 	app := fiber.New(fiber.Config{
 		DisableStartupMessage: true,
 		StrictRouting:         true,
@@ -35,24 +35,24 @@ func New(userHandler *handler.User) *fiber.App {
 
 	app.Use(recover.New())
 
-	AddRouters(app, userHandler)
+	AddRouters(app, userHandler, cmdHandler)
 
 	return app
 }
 
-func NewTestApp(userHandler *handler.User) *fiber.App {
+func NewTestApp(userHandler *handler.User, cmdHandler *handler.Cmd) *fiber.App {
 	app := fiber.New(fiber.Config{
 		DisableStartupMessage: true,
 		StrictRouting:         true,
 		CaseSensitive:         true,
 	})
 
-	AddRouters(app, userHandler)
+	AddRouters(app, userHandler, cmdHandler)
 
 	return app
 }
 
-func AddRouters(app *fiber.App, userHandler *handler.User) {
+func AddRouters(app *fiber.App, userHandler *handler.User, cmdHandler *handler.Cmd) {
 	perRequestLimiterMiddleware := limiter.New(limiter.Config{
 		Max:        1,
 		Expiration: throttleTime,
@@ -66,6 +66,8 @@ func AddRouters(app *fiber.App, userHandler *handler.User) {
 	router := app.Group("/api")
 
 	router.Get("/user/:id", perRequestLimiterMiddleware, userHandler.Detail)
+
+	router.Post("/cmd", perRequestLimiterMiddleware, cmdHandler.Call)
 
 	app.Use(func(ctx *fiber.Ctx) error {
 		return res.NotFound(ctx, errcode.NotFound, "Not Found")

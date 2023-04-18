@@ -19,7 +19,7 @@ func getCmd(t *testing.T) *handler.Cmd {
 func TestCmdStart(t *testing.T) {
 	t.Parallel()
 	cmd := getCmd(t)
-	_, stdout, stderr, err := cmd.Start("ls")
+	_, stdout, stderr, err := cmd.Start("ls", handler.CmdOptions{})
 	require.NoError(t, err)
 	buf := make([]byte, 16)
 	errBuf := make([]byte, 16)
