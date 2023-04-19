@@ -14,8 +14,22 @@ message CmdCallRes {
   int32 type = 2;
 }
 
+message CmdListFolderReq {
+  string folder = 1;
+}
+
+message FolderItem {
+  string name = 1;
+  bool is_folder = 2;
+}
+
+message CmdListFolderRes {
+  repeated FolderItem items = 1;
+}
+
 
 
 service CmdService {
   rpc CmdCall(Cmd) returns(stream CmdCallRes);
+  rpc CmdListFolder(CmdListFolderReq) returns(CmdListFolderRes);
 }
