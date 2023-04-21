@@ -1,7 +1,11 @@
 package handler
 
 import (
+	"context"
+	"fmt"
 	"io"
+	"io/fs"
+	"os"
 	"os/exec"
 	"sync"
 	"syscall"
@@ -10,6 +14,7 @@ import (
 	"google.golang.org/grpc/status"
 
 	"github.com/sociosarbis/grpc/boilerplate/internal/pkg/errgo"
+	"github.com/sociosarbis/grpc/boilerplate/internal/pkg/slice"
 	"github.com/sociosarbis/grpc/boilerplate/proto"
 )
 
@@ -110,4 +115,27 @@ func (cmd *Cmd) Call(cmdReq *proto.Cmd, srv proto.CmdService_CmdCallServer) erro
 	wg.Wait()
 
 	return ret
+}
+
+func (cmd *Cmd) ListFolder(ctx context.Context, req *proto.CmdListFolderReq) (*proto.CmdListFolderRes, error) {
+	var path = req.Folder
+	if len(path) == 0 || path[0] != '/' {
+		path = fmt.Sprintf("/%s", path)
+	}
+	i := len(path) - 1
+	for i > 0 && path[i] != '/' {
+		i--
+	}
+	entries, err := os.ReadDir(path[0 : i+1])
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "os.ReadDir: %v", err)
+	}
+	return &proto.CmdListFolderRes{
+		Items: slice.Map(entries, func(item fs.DirEntry) *proto.FolderItem {
+			return &proto.FolderItem{
+				Name:     item.Name(),
+				IsFolder: item.IsDir(),
+			}
+		}),
+	}, nil
 }
