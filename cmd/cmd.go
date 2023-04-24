@@ -7,7 +7,7 @@ import (
 	"github.com/sociosarbis/grpc/boilerplate/cmd/web"
 )
 
-var Root = cobra.Command{
+var Root = cobra.Command{ //nolint:gochecknoglobals
 	CompletionOptions: cobra.CompletionOptions{
 		DisableDefaultCmd:   false,
 		DisableNoDescFlag:   false,
@@ -18,6 +18,6 @@ var Root = cobra.Command{
 	SilenceErrors: true,
 }
 
-func init() {
+func init() { //nolint:gochecknoinits
 	Root.AddCommand(ui.Command, web.Command)
 }

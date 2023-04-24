@@ -4,3 +4,7 @@ type CmdCallDto struct {
 	Script string `json:"script" validate:"required,min=1"`
 	Wd     string `json:"wd" validate:"required,min=1"`
 }
+
+type CmdListFolderDto struct {
+	Prefix string `json:"prefix" validate:"required,min=1"`
+}

@@ -18,7 +18,7 @@ import (
 	"github.com/sociosarbis/grpc/boilerplate/internal/web"
 )
 
-var Command = &cobra.Command{
+var Command = &cobra.Command{ //nolint:gochecknoglobals
 	Use:   "web",
 	Short: "start web server",
 	RunE: func(cmd *cobra.Command, args []string) error {

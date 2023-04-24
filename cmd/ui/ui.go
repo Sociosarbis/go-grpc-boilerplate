@@ -9,7 +9,7 @@ import (
 	"github.com/sociosarbis/grpc/boilerplate/internal/pkg/errgo"
 )
 
-var Command = &cobra.Command{
+var Command = &cobra.Command{ //nolint:gochecknoglobals
 	Use:   "ui",
 	Short: "open cli ui page",
 	RunE: func(cmd *cobra.Command, args []string) error {
@@ -17,7 +17,7 @@ var Command = &cobra.Command{
 	},
 }
 
-func init() {
+func init() { //nolint:gochecknoinits
 	fmt.Println("ui cmd init")
 }
 

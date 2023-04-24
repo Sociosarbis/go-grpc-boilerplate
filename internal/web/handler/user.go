@@ -1,15 +1,13 @@
 package handler
 
 import (
-	"errors"
-
-	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
 
 	"github.com/sociosarbis/grpc/boilerplate/internal/errcode"
 	"github.com/sociosarbis/grpc/boilerplate/internal/grpcmod"
 	"github.com/sociosarbis/grpc/boilerplate/internal/web/handler/common"
+	"github.com/sociosarbis/grpc/boilerplate/internal/web/middleware"
 	"github.com/sociosarbis/grpc/boilerplate/internal/web/req"
 	"github.com/sociosarbis/grpc/boilerplate/internal/web/res"
 	"github.com/sociosarbis/grpc/boilerplate/proto"
@@ -28,20 +26,9 @@ func NewUser(common *common.Common, client *grpcmod.Client) (*User, error) {
 }
 
 func (u *User) Detail(ctx *fiber.Ctx) error {
-	var params req.UserDetailDto
-	err := ctx.ParamsParser(&params)
-	if err != nil {
-		return res.BadRequest(ctx, errcode.Unknown, "fiber.Ctx.ParamsParser")
-	}
-
-	err = u.common.Validate.Struct(&params)
-	if err != nil {
-		msg := "validate.Struct"
-		errs := make(validator.ValidationErrors, 0)
-		if errors.As(err, &errs) {
-			msg = errs.Error()
-		}
-		return res.BadRequest(ctx, errcode.Unknown, msg)
+	params, ok := ctx.UserContext().Value(middleware.ParamsCtxKey).(req.UserDetailDto)
+	if !ok {
+		return res.BadRequest(ctx, errcode.Unknown, "assert req.UserDetailDto")
 	}
 	r, err := u.client.User.UserDetail(ctx.UserContext(), &proto.UserDetailReq{
 		Id: params.ID,

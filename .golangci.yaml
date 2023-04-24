@@ -239,6 +239,7 @@ linters-settings:
       - "func github.com/sociosarbis/grpc/boilerplate/internal/web/res.NotFound("
       - "func google.golang.org/grpc/status.Errorf("
       - "func (*github.com/dgrijalva/jwt-go.Token).SignedString("
+      - "func github.com/sociosarbis/grpc/boilerplate/internal/web/req.Validate("
 
   nlreturn:
     block-size: 3

@@ -13,7 +13,9 @@ import (
 	"github.com/sociosarbis/grpc/boilerplate/internal/pkg/errgo"
 	"github.com/sociosarbis/grpc/boilerplate/internal/pkg/logger"
 	"github.com/sociosarbis/grpc/boilerplate/internal/web/handler"
+	"github.com/sociosarbis/grpc/boilerplate/internal/web/handler/common"
 	"github.com/sociosarbis/grpc/boilerplate/internal/web/middleware"
+	"github.com/sociosarbis/grpc/boilerplate/internal/web/req"
 	"github.com/sociosarbis/grpc/boilerplate/internal/web/res"
 )
 
@@ -26,7 +28,7 @@ func Start(c config.AppConfig, app *fiber.App) error {
 	return errgo.Wrap(app.Listen(c.ListenAddr()), "fiber.App.Listen")
 }
 
-func New(userHandler *handler.User, cmdHandler *handler.Cmd) *fiber.App {
+func New(comm *common.Common, userHandler *handler.User, cmdHandler *handler.Cmd) *fiber.App {
 	app := fiber.New(fiber.Config{
 		DisableStartupMessage: true,
 		StrictRouting:         true,
@@ -35,24 +37,24 @@ func New(userHandler *handler.User, cmdHandler *handler.Cmd) *fiber.App {
 
 	app.Use(recover.New())
 
-	AddRouters(app, userHandler, cmdHandler)
+	AddRouters(app, comm, userHandler, cmdHandler)
 
 	return app
 }
 
-func NewTestApp(userHandler *handler.User, cmdHandler *handler.Cmd) *fiber.App {
+func NewTestApp(userHandler *handler.User, comm *common.Common, cmdHandler *handler.Cmd) *fiber.App {
 	app := fiber.New(fiber.Config{
 		DisableStartupMessage: true,
 		StrictRouting:         true,
 		CaseSensitive:         true,
 	})
 
-	AddRouters(app, userHandler, cmdHandler)
+	AddRouters(app, comm, userHandler, cmdHandler)
 
 	return app
 }
 
-func AddRouters(app *fiber.App, userHandler *handler.User, cmdHandler *handler.Cmd) {
+func AddRouters(app *fiber.App, comm *common.Common, userHandler *handler.User, cmdHandler *handler.Cmd) {
 	perRequestLimiterMiddleware := limiter.New(limiter.Config{
 		Max:        1,
 		Expiration: throttleTime,
@@ -65,9 +67,29 @@ func AddRouters(app *fiber.App, userHandler *handler.User, cmdHandler *handler.C
 
 	router := app.Group("/api")
 
-	router.Get("/user/:id", perRequestLimiterMiddleware, userHandler.Detail)
+	router.Get("/user/:id",
+		perRequestLimiterMiddleware,
+		middleware.NewValidateReqBuilder(
+			comm.Validate,
+			middleware.ParamsTypeParams,
+			req.UserDetailDto{}).Build(),
+		userHandler.Detail)
 
-	router.Post("/cmd", perRequestLimiterMiddleware, cmdHandler.Call)
+	router.Post("/cmd",
+		perRequestLimiterMiddleware,
+		middleware.NewValidateReqBuilder(
+			comm.Validate,
+			middleware.ParamsTypeBody,
+			req.CmdCallDto{}).Build(),
+		cmdHandler.Call)
+
+	router.Get("/cmd/folder",
+		perRequestLimiterMiddleware,
+		middleware.NewValidateReqBuilder(
+			comm.Validate,
+			middleware.ParamsTypeQuery,
+			req.CmdListFolderDto{}).Build(),
+		cmdHandler.ListFolder)
 
 	app.Use(func(ctx *fiber.Ctx) error {
 		return res.NotFound(ctx, errcode.NotFound, "Not Found")
