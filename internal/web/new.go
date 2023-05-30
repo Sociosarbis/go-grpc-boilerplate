@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 
@@ -35,7 +36,7 @@ func New(comm *common.Common, userHandler *handler.User, cmdHandler *handler.Cmd
 		CaseSensitive:         true,
 	})
 
-	app.Use(recover.New())
+	app.Use(recover.New(), cors.New())
 
 	AddRouters(app, comm, userHandler, cmdHandler)
 
