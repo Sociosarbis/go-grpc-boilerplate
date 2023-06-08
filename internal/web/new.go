@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
@@ -18,6 +19,7 @@ import (
 	"github.com/sociosarbis/grpc/boilerplate/internal/web/middleware"
 	"github.com/sociosarbis/grpc/boilerplate/internal/web/req"
 	"github.com/sociosarbis/grpc/boilerplate/internal/web/res"
+	"github.com/sociosarbis/grpc/boilerplate/internal/web/wshandler"
 )
 
 const throttleTime = time.Second
@@ -29,7 +31,7 @@ func Start(c config.AppConfig, app *fiber.App) error {
 	return errgo.Wrap(app.Listen(c.ListenAddr()), "fiber.App.Listen")
 }
 
-func New(comm *common.Common, userHandler *handler.User, cmdHandler *handler.Cmd) *fiber.App {
+func New(comm *common.Common, userHandler *handler.User, cmdHandler *handler.Cmd, userWsHandler *wshandler.User) *fiber.App {
 	app := fiber.New(fiber.Config{
 		DisableStartupMessage: true,
 		StrictRouting:         true,
@@ -38,24 +40,24 @@ func New(comm *common.Common, userHandler *handler.User, cmdHandler *handler.Cmd
 
 	app.Use(recover.New(), cors.New())
 
-	AddRouters(app, comm, userHandler, cmdHandler)
+	AddRouters(app, comm, userHandler, cmdHandler, userWsHandler)
 
 	return app
 }
 
-func NewTestApp(userHandler *handler.User, comm *common.Common, cmdHandler *handler.Cmd) *fiber.App {
+func NewTestApp(userHandler *handler.User, comm *common.Common, cmdHandler *handler.Cmd, userWsHandler *wshandler.User) *fiber.App {
 	app := fiber.New(fiber.Config{
 		DisableStartupMessage: true,
 		StrictRouting:         true,
 		CaseSensitive:         true,
 	})
 
-	AddRouters(app, comm, userHandler, cmdHandler)
+	AddRouters(app, comm, userHandler, cmdHandler, userWsHandler)
 
 	return app
 }
 
-func AddRouters(app *fiber.App, comm *common.Common, userHandler *handler.User, cmdHandler *handler.Cmd) {
+func AddRouters(app *fiber.App, comm *common.Common, userHandler *handler.User, cmdHandler *handler.Cmd, userWsHandler *wshandler.User) {
 	perRequestLimiterMiddleware := limiter.New(limiter.Config{
 		Max:        1,
 		Expiration: throttleTime,
@@ -67,6 +69,8 @@ func AddRouters(app *fiber.App, comm *common.Common, userHandler *handler.User, 
 	app.Use(middleware.AttachToken)
 
 	router := app.Group("/api")
+
+	wsRouter := app.Group("/ws")
 
 	router.Get("/user/:id",
 		perRequestLimiterMiddleware,
@@ -92,6 +96,7 @@ func AddRouters(app *fiber.App, comm *common.Common, userHandler *handler.User, 
 			req.CmdListFolderDto{}).Build(),
 		cmdHandler.ListFolder)
 
+	wsRouter.Get("/user", websocket.New(userWsHandler.Handler))
 	app.Use(func(ctx *fiber.Ctx) error {
 		return res.NotFound(ctx, errcode.NotFound, "Not Found")
 	})
