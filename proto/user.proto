@@ -26,6 +26,18 @@ message UserDetailRes {
     repeated Group groups = 3;
 }
 
+message UserLoginReq {
+    string name = 1;
+    string password = 2;
+}
+
+message UserLoginRes {
+    string code = 1;
+    string msg = 2;
+    optional string token = 3;
+}
+
 service UserService {
     rpc UserDetail(UserDetailReq) returns (UserDetailRes);
+    rpc UserLogin(UserLoginReq) returns (UserLoginRes);
 }

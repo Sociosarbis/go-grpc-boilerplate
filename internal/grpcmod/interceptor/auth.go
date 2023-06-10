@@ -2,6 +2,7 @@ package interceptor
 
 import (
 	"context"
+	"reflect"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -13,13 +14,21 @@ import (
 )
 
 type AuthInterceptor struct {
-	jwtManager *jwtgo.JWTManager
+	jwtManager   *jwtgo.JWTManager
+	skipAuthReqs map[reflect.Type]struct{}
 }
 
 func NewAuth(jwtManager *jwtgo.JWTManager) *AuthInterceptor {
 	return &AuthInterceptor{
-		jwtManager,
+		jwtManager:   jwtManager,
+		skipAuthReqs: map[reflect.Type]struct{}{},
 	}
+}
+
+func (i *AuthInterceptor) SkipReq(req any) *AuthInterceptor {
+	t := reflect.TypeOf(req)
+	i.skipAuthReqs[t] = struct{}{}
+	return i
 }
 
 func getTokenFromContext(ctx context.Context) (string, error) {
@@ -39,6 +48,10 @@ func (inter *AuthInterceptor) Auth(
 	req any,
 	info *grpc.UnaryServerInfo,
 	handler grpc.UnaryHandler) (any, error) {
+	t := reflect.TypeOf(req)
+	if _, ok := inter.skipAuthReqs[t]; ok {
+		return handler(ctx, req)
+	}
 	token, err := getTokenFromContext(ctx)
 
 	if err != nil {

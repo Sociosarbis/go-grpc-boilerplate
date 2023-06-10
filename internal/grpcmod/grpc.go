@@ -22,6 +22,14 @@ func (s *server) UserDetail(ctx context.Context, req *proto.UserDetailReq) (*pro
 	return res, nil
 }
 
+func (s *server) UserLogin(ctx context.Context, req *proto.UserLoginReq) (*proto.UserLoginRes, error) {
+	res, err := s.handler.User.Login(ctx, req)
+	if err != nil {
+		return nil, errgo.Wrap(err, "server.Login")
+	}
+	return res, nil
+}
+
 func (s *server) CmdCall(cmdReq *proto.Cmd, srv proto.CmdService_CmdCallServer) error {
 	err := s.handler.Cmd.Call(cmdReq, srv)
 	if err != nil {

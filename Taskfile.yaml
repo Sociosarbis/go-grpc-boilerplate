@@ -1,9 +1,14 @@
 version: "3"
 includes:
   mock: ./etc/mock.task.yaml
+  proto: ./etc/proto.task.yaml
 
 tasks:
   mock:
     desc: Generate Mocks.
     deps:
       - mock:all
+  proto:
+    desc: Generate Proto Glue Codes.
+    deps:
+      - proto:all

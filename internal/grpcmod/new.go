@@ -19,6 +19,8 @@ func New(handler handler.Handler, authInterceptor *interceptor.AuthInterceptor) 
 		return nil, errgo.Wrap(err, "net.Listen")
 	}
 
+	authInterceptor.SkipReq(&proto.UserLoginReq{})
+
 	srv := grpc.NewServer(
 		grpc.UnaryInterceptor(authInterceptor.Auth),
 		grpc.StreamInterceptor(authInterceptor.AuthStream),
