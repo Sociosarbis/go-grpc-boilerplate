@@ -6,6 +6,7 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-playground/validator/v10 v10.12.0
 	github.com/go-sql-driver/mysql v1.6.0
+	github.com/gofiber/contrib/websocket v1.0.0
 	github.com/gofiber/fiber/v2 v2.46.0
 	github.com/ilyakaznacheev/cleanenv v1.4.0
 	github.com/spf13/cobra v1.7.0
@@ -26,7 +27,6 @@ require (
 	github.com/fasthttp/websocket v1.5.3 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
-	github.com/gofiber/contrib/websocket v1.0.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect

@@ -25,3 +25,5 @@ yarn.lock
 .task/
 
 config.yaml
+
+docker/data
