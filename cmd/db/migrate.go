@@ -1,9 +1,12 @@
 package db
 
 import (
+	"context"
 	"database/sql"
+	"fmt"
+	"io"
 	"log"
-	"os"
+	"time"
 
 	"github.com/sociosarbis/grpc/boilerplate/internal/config"
 	"github.com/sociosarbis/grpc/boilerplate/internal/dal/dao"
@@ -17,7 +20,24 @@ import (
 	"gorm.io/gorm/schema"
 )
 
-func Migrate() error {
+type MigrateOptions struct {
+	DryRun       bool
+	OutputWriter io.Writer
+}
+
+type MigrateLogger struct {
+	gormLogger.Interface
+	writer io.Writer
+}
+
+func (l MigrateLogger) Trace(ctx context.Context, begin time.Time, fc func() (sql string, rowsAffected int64), err error) {
+	sql, _ := fc()
+	if sql[0:6] != "SELECT" {
+		l.writer.Write([]byte(fmt.Sprintln(sql)))
+	}
+}
+
+func Migrate(opts MigrateOptions) error {
 	var cfg config.AppConfig
 	var conn *sql.DB
 
@@ -32,19 +52,18 @@ func Migrate() error {
 		return errgo.Wrap(err, "fx.New")
 	}
 
-	var gLog gormLogger.Interface
-	logger.Info("enable gorm debug mode, will log all sql")
-	gLog = gormLogger.New(
-		log.New(os.Stdout, "\r\n", log.LstdFlags),
+	gLog := gormLogger.New(
+		log.New(io.Discard, "", 0),
 		gormLogger.Config{
 			LogLevel:                  gormLogger.Info,
 			IgnoreRecordNotFoundError: true,
-			Colorful:                  true,
+			Colorful:                  false,
 		},
 	)
+
 	db, err := gorm.Open(
 		mysql.New(mysql.Config{Conn: conn, DisableDatetimePrecision: true}),
-		&gorm.Config{Logger: gLog, DryRun: true, NamingStrategy: schema.NamingStrategy{
+		&gorm.Config{Logger: MigrateLogger{Interface: gLog, writer: opts.OutputWriter}, DryRun: opts.DryRun, NamingStrategy: schema.NamingStrategy{
 			NoLowerCase:   true,
 			SingularTable: true,
 		}, QueryFields: true, SkipDefaultTransaction: true},
