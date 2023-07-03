@@ -64,7 +64,7 @@ func Migrate(opts MigrateOptions) error {
 	db, err := gorm.Open(
 		mysql.New(mysql.Config{Conn: conn, DisableDatetimePrecision: true}),
 		&gorm.Config{Logger: MigrateLogger{Interface: gLog, writer: opts.OutputWriter}, DryRun: opts.DryRun, NamingStrategy: schema.NamingStrategy{
-			NoLowerCase:   true,
+			NoLowerCase:   false,
 			SingularTable: true,
 		}, QueryFields: true, SkipDefaultTransaction: true},
 	)

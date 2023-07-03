@@ -2,7 +2,7 @@ package dao
 
 type Group struct {
 	Common
-	Name     string
+	Name     string  `gorm:"type:varchar(255);"`
 	ParentID uint32  `gorm:"column:parentId"`
 	Children []Group `gorm:"foreignKey:parentId"`
 	Roles    []Role  `gorm:"many2many:group_roles_role"`

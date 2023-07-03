@@ -3,14 +3,14 @@ package handler
 import (
 	"context"
 
-	"gorm.io/gorm"
-
 	"github.com/sociosarbis/grpc/boilerplate/internal/dal/dao"
 	"github.com/sociosarbis/grpc/boilerplate/internal/jwtgo"
 	"github.com/sociosarbis/grpc/boilerplate/internal/pkg/errgo"
 	"github.com/sociosarbis/grpc/boilerplate/internal/pkg/logger"
 	"github.com/sociosarbis/grpc/boilerplate/internal/pkg/slice"
 	"github.com/sociosarbis/grpc/boilerplate/proto"
+	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
 
 type User struct {
@@ -69,7 +69,8 @@ func (u User) Login(ctx context.Context, req *proto.UserLoginReq) (*proto.UserLo
 		logger.Err(err, "User.Login")
 		return nil, errgo.Wrap(err, "User.Login")
 	}
-	if user.Password != req.Password {
+	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(req.Password))
+	if err != nil {
 		logger.Err(err, "incorrect password")
 		return nil, errgo.Wrap(err, "User.Login")
 	}
