@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-playground/validator/v10 v10.12.0
-	github.com/go-sql-driver/mysql v1.6.0
+	github.com/go-sql-driver/mysql v1.7.0
 	github.com/gofiber/contrib/websocket v1.0.0
 	github.com/gofiber/fiber/v2 v2.46.0
 	github.com/ilyakaznacheev/cleanenv v1.4.0
@@ -17,7 +17,8 @@ require (
 	golang.org/x/crypto v0.10.0
 	google.golang.org/grpc v1.54.0
 	google.golang.org/protobuf v1.28.1
-	gorm.io/driver/mysql v1.4.4
+	gorm.io/datatypes v1.2.0
+	gorm.io/driver/mysql v1.4.7
 	gorm.io/gorm v1.25.2
 )
 

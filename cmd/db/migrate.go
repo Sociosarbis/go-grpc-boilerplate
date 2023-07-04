@@ -73,6 +73,6 @@ func Migrate(opts MigrateOptions) error {
 		return errgo.Wrap(err, "gorm.Open")
 	}
 	db.Set("gorm:table_options", "ENGINE=InnoDB")
-	err = db.AutoMigrate(&dao.User{})
+	err = db.AutoMigrate(&dao.User{}, &dao.Command{})
 	return errgo.Wrap(err, "AutoMigrate")
 }
