@@ -80,6 +80,14 @@ func AddRouters(app *fiber.App, comm *common.Common, userHandler *handler.User, 
 			req.UserDetailDto{}).Build(),
 		userHandler.Detail)
 
+	router.Post("/user/ms-login",
+		perRequestLimiterMiddleware,
+		middleware.NewValidateReqBuilder(
+			comm.Validate,
+			middleware.ParamsTypeBody,
+			req.UserMsLoginDto{}).Build(),
+		userHandler.LoginMs)
+
 	router.Post("/cmd",
 		perRequestLimiterMiddleware,
 		middleware.NewValidateReqBuilder(

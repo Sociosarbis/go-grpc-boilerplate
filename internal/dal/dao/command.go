@@ -1,9 +1,8 @@
 package dao
 
 import (
-	"time"
-
 	"gorm.io/datatypes"
+	"gorm.io/gorm"
 )
 
 type CommandDataItem struct {
@@ -16,11 +15,9 @@ type CommandData struct {
 }
 
 type Command struct {
-	Common
+	gorm.Model
 	Data      datatypes.JSONType[CommandData]
-	CreatorId uint32 `gorm:"column:creatorId"`
+	CreatorId uint   `gorm:"column:creatorId"`
 	Creator   User   `gorm:"foreginKey:creatorId"`
 	Users     []User `gorm:"many2many:user_commands_command"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
 }

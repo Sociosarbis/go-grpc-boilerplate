@@ -1,7 +1,9 @@
 package dao
 
+import "gorm.io/gorm"
+
 type User struct {
-	Common
+	gorm.Model
 	Name         string  `gorm:"type:varchar(255);"`
 	PasswordHash string  `gorm:"type:varchar(255);"`
 	Email        string  `gorm:"type:text;"`

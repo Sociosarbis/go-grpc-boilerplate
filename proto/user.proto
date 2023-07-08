@@ -37,7 +37,12 @@ message UserLoginRes {
     optional string token = 3;
 }
 
+message UserMsLoginReq {
+    string token = 1;
+}
+
 service UserService {
     rpc UserDetail(UserDetailReq) returns (UserDetailRes);
     rpc UserLogin(UserLoginReq) returns (UserLoginRes);
+    rpc UserMsLogin(UserMsLoginReq) returns (UserLoginRes);
 }

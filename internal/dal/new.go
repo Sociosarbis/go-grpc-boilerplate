@@ -30,7 +30,7 @@ func NewDB(conn *sql.DB, c config.AppConfig) (*gorm.DB, error) {
 	db, err := gorm.Open(
 		mysql.New(mysql.Config{Conn: conn, DisableDatetimePrecision: true}),
 		&gorm.Config{Logger: gLog, NamingStrategy: schema.NamingStrategy{
-			NoLowerCase:   true,
+			NoLowerCase:   false,
 			SingularTable: true,
 		}, QueryFields: true, PrepareStmt: true, SkipDefaultTransaction: true},
 	)

@@ -40,3 +40,18 @@ func (u *User) Detail(ctx *fiber.Ctx) error {
 	}
 	return res.Ok(ctx, r)
 }
+
+func (u *User) LoginMs(ctx *fiber.Ctx) error {
+	params, ok := ctx.UserContext().Value(middleware.ParamsCtxKey).(req.UserMsLoginDto)
+	if !ok {
+		return res.BadRequest(ctx, errcode.Unknown, "assert req.UserLoginMsDto")
+	}
+	r, err := u.client.User.UserMsLogin(ctx.UserContext(), &proto.UserMsLoginReq{
+		Token: params.Token,
+	})
+	if err != nil {
+		u.common.Logger.Error("client.User.UserMsLogin", zap.Error(err))
+		return res.InternalError(ctx, errcode.Unknown, "client.User.UserMsLogin")
+	}
+	return res.Ok(ctx, r)
+}

@@ -30,6 +30,14 @@ func (s *server) UserLogin(ctx context.Context, req *proto.UserLoginReq) (*proto
 	return res, nil
 }
 
+func (s *server) UserMsLogin(ctx context.Context, req *proto.UserMsLoginReq) (*proto.UserLoginRes, error) {
+	res, err := s.handler.User.LoginMs(ctx, req)
+	if err != nil {
+		return nil, errgo.Wrap(err, "server.LoginMs")
+	}
+	return res, nil
+}
+
 func (s *server) CmdCall(cmdReq *proto.Cmd, srv proto.CmdService_CmdCallServer) error {
 	err := s.handler.Cmd.Call(cmdReq, srv)
 	if err != nil {
