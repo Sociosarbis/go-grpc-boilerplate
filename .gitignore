@@ -27,3 +27,5 @@ yarn.lock
 config.yaml
 
 docker/data
+
+protobuf

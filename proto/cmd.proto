@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package proto;
 
+import "google/protobuf/struct.proto";
+
 option go_package = "/proto";
 
 message Cmd {
@@ -18,6 +20,18 @@ message CmdListFolderReq {
   string folder = 1;
 }
 
+message CmdItem {
+  string type = 1;
+  google.protobuf.Struct value = 2;
+}
+
+message CmdAddReq {
+  repeated CmdItem items = 1;
+}
+
+message CmdAddRes {
+}
+
 message FolderItem {
   string name = 1;
   bool is_folder = 2;
@@ -32,4 +46,5 @@ message CmdListFolderRes {
 service CmdService {
   rpc CmdCall(Cmd) returns(stream CmdCallRes);
   rpc CmdListFolder(CmdListFolderReq) returns(CmdListFolderRes);
+  rpc CmdSave(CmdAddReq) returns(CmdAddRes);
 }

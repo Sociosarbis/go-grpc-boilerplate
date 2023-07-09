@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"io/fs"
@@ -12,18 +13,28 @@ import (
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"gorm.io/datatypes"
+	"gorm.io/gorm"
 
+	"github.com/sociosarbis/grpc/boilerplate/internal/ctxkey"
+	"github.com/sociosarbis/grpc/boilerplate/internal/dal/dao"
+	"github.com/sociosarbis/grpc/boilerplate/internal/jwtgo"
 	"github.com/sociosarbis/grpc/boilerplate/internal/pkg/errgo"
 	"github.com/sociosarbis/grpc/boilerplate/internal/pkg/slice"
 	"github.com/sociosarbis/grpc/boilerplate/proto"
 )
 
 type Cmd struct {
+	db *gorm.DB
 }
 
-func NewCmd() Cmd {
-	return Cmd{}
+func NewCmd(db *gorm.DB) Cmd {
+	return Cmd{
+		db,
+	}
 }
+
+var errInvalidUser = errors.New("invalid user")
 
 type CmdOptions struct {
 	Wd string
@@ -138,4 +149,30 @@ func (cmd *Cmd) ListFolder(ctx context.Context, req *proto.CmdListFolderReq) (*p
 			}
 		}),
 	}, nil
+}
+
+func (cmd *Cmd) AddCmd(ctx context.Context, req *proto.CmdAddReq) (*proto.CmdAddRes, error) {
+	claims, ok := ctx.Value(ctxkey.UseClaims).(*jwtgo.UserClaims)
+	if !ok {
+		return nil, errInvalidUser
+	}
+	err := cmd.db.Create(dao.Command{
+		Data: datatypes.NewJSONType(dao.CommandData{
+			Items: slice.Map(req.Items, func(item *proto.CmdItem) dao.CommandDataItem {
+				return dao.CommandDataItem{
+					Type:  item.Type,
+					Value: item.Value.AsMap(),
+				}
+			}),
+		}),
+		Creator: dao.User{
+			Model: gorm.Model{
+				ID: uint(claims.User.ID),
+			},
+		},
+	}).Error
+	if err != nil {
+		return nil, errgo.Wrap(err, "AddCmd")
+	}
+	return &proto.CmdAddRes{}, nil
 }

@@ -10,4 +10,7 @@ go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
 
 # install mockery
 go install github.com/vektra/mockery/v2@v2.30.1
+
+# clone google proto
+git clone https://github.com/protocolbuffers/protobuf.git --branch main --depth 1
 ```
