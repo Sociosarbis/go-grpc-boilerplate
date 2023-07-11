@@ -6,12 +6,12 @@ import (
 )
 
 type CommandDataItem struct {
-	Type  string         `json:"type"`
-	Value map[string]any `json:"value"`
+	Type  string
+	Value string
 }
 
 type CommandData struct {
-	Items []CommandDataItem `json:"items"`
+	Items []CommandDataItem
 }
 
 type Command struct {

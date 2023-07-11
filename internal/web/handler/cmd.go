@@ -10,6 +10,7 @@ import (
 
 	"github.com/sociosarbis/grpc/boilerplate/internal/errcode"
 	"github.com/sociosarbis/grpc/boilerplate/internal/grpcmod"
+	"github.com/sociosarbis/grpc/boilerplate/internal/pkg/slice"
 	"github.com/sociosarbis/grpc/boilerplate/internal/web/handler/common"
 	"github.com/sociosarbis/grpc/boilerplate/internal/web/middleware"
 	"github.com/sociosarbis/grpc/boilerplate/internal/web/req"
@@ -84,6 +85,29 @@ func (c *Cmd) ListFolder(ctx *fiber.Ctx) error {
 	if err != nil {
 		c.common.Logger.Error("client.Cmd.CmdListFolder", zap.Error(err))
 		return res.InternalError(ctx, errcode.Unknown, "client.Cmd.CmdListFolder")
+	}
+
+	return res.Ok(ctx, r)
+}
+
+func (c *Cmd) Add(ctx *fiber.Ctx) error {
+	params, ok := ctx.UserContext().Value(middleware.ParamsCtxKey).(req.CmdAddDto)
+	if !ok {
+		return res.BadRequest(ctx, errcode.Unknown, "assert req.CmdAddDto")
+	}
+
+	r, err := c.client.Cmd.CmdAdd(ctx.UserContext(), &proto.CmdAddReq{
+		Items: slice.Map(params.Items, func(item req.CmdItem) *proto.CmdItem {
+			return &proto.CmdItem{
+				Type:  item.Type,
+				Value: item.Value,
+			}
+		}),
+	})
+
+	if err != nil {
+		c.common.Logger.Error("client.Cmd.CmdAdd", zap.Error(err))
+		return res.InternalError(ctx, errcode.Unknown, "client.Cmd.CmdAdd")
 	}
 
 	return res.Ok(ctx, r)

@@ -151,17 +151,17 @@ func (cmd *Cmd) ListFolder(ctx context.Context, req *proto.CmdListFolderReq) (*p
 	}, nil
 }
 
-func (cmd *Cmd) AddCmd(ctx context.Context, req *proto.CmdAddReq) (*proto.CmdAddRes, error) {
+func (cmd *Cmd) Add(ctx context.Context, req *proto.CmdAddReq) (*proto.CmdAddRes, error) {
 	claims, ok := ctx.Value(ctxkey.UseClaims).(*jwtgo.UserClaims)
 	if !ok {
 		return nil, errInvalidUser
 	}
-	err := cmd.db.Create(dao.Command{
+	newCmd := dao.Command{
 		Data: datatypes.NewJSONType(dao.CommandData{
 			Items: slice.Map(req.Items, func(item *proto.CmdItem) dao.CommandDataItem {
 				return dao.CommandDataItem{
 					Type:  item.Type,
-					Value: item.Value.AsMap(),
+					Value: item.Value,
 				}
 			}),
 		}),
@@ -170,9 +170,12 @@ func (cmd *Cmd) AddCmd(ctx context.Context, req *proto.CmdAddReq) (*proto.CmdAdd
 				ID: uint(claims.User.ID),
 			},
 		},
-	}).Error
+	}
+	err := cmd.db.Create(&newCmd).Error
 	if err != nil {
 		return nil, errgo.Wrap(err, "AddCmd")
 	}
-	return &proto.CmdAddRes{}, nil
+	return &proto.CmdAddRes{
+		ID: uint32(newCmd.ID),
+	}, nil
 }

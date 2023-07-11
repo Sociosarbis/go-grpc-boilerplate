@@ -24,7 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type CmdServiceClient interface {
 	CmdCall(ctx context.Context, in *Cmd, opts ...grpc.CallOption) (CmdService_CmdCallClient, error)
 	CmdListFolder(ctx context.Context, in *CmdListFolderReq, opts ...grpc.CallOption) (*CmdListFolderRes, error)
-	CmdSave(ctx context.Context, in *CmdAddReq, opts ...grpc.CallOption) (*CmdAddRes, error)
+	CmdAdd(ctx context.Context, in *CmdAddReq, opts ...grpc.CallOption) (*CmdAddRes, error)
 }
 
 type cmdServiceClient struct {
@@ -76,9 +76,9 @@ func (c *cmdServiceClient) CmdListFolder(ctx context.Context, in *CmdListFolderR
 	return out, nil
 }
 
-func (c *cmdServiceClient) CmdSave(ctx context.Context, in *CmdAddReq, opts ...grpc.CallOption) (*CmdAddRes, error) {
+func (c *cmdServiceClient) CmdAdd(ctx context.Context, in *CmdAddReq, opts ...grpc.CallOption) (*CmdAddRes, error) {
 	out := new(CmdAddRes)
-	err := c.cc.Invoke(ctx, "/proto.CmdService/CmdSave", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.CmdService/CmdAdd", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -91,7 +91,7 @@ func (c *cmdServiceClient) CmdSave(ctx context.Context, in *CmdAddReq, opts ...g
 type CmdServiceServer interface {
 	CmdCall(*Cmd, CmdService_CmdCallServer) error
 	CmdListFolder(context.Context, *CmdListFolderReq) (*CmdListFolderRes, error)
-	CmdSave(context.Context, *CmdAddReq) (*CmdAddRes, error)
+	CmdAdd(context.Context, *CmdAddReq) (*CmdAddRes, error)
 	mustEmbedUnimplementedCmdServiceServer()
 }
 
@@ -105,8 +105,8 @@ func (UnimplementedCmdServiceServer) CmdCall(*Cmd, CmdService_CmdCallServer) err
 func (UnimplementedCmdServiceServer) CmdListFolder(context.Context, *CmdListFolderReq) (*CmdListFolderRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CmdListFolder not implemented")
 }
-func (UnimplementedCmdServiceServer) CmdSave(context.Context, *CmdAddReq) (*CmdAddRes, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CmdSave not implemented")
+func (UnimplementedCmdServiceServer) CmdAdd(context.Context, *CmdAddReq) (*CmdAddRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CmdAdd not implemented")
 }
 func (UnimplementedCmdServiceServer) mustEmbedUnimplementedCmdServiceServer() {}
 
@@ -160,20 +160,20 @@ func _CmdService_CmdListFolder_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
-func _CmdService_CmdSave_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _CmdService_CmdAdd_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CmdAddReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(CmdServiceServer).CmdSave(ctx, in)
+		return srv.(CmdServiceServer).CmdAdd(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.CmdService/CmdSave",
+		FullMethod: "/proto.CmdService/CmdAdd",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CmdServiceServer).CmdSave(ctx, req.(*CmdAddReq))
+		return srv.(CmdServiceServer).CmdAdd(ctx, req.(*CmdAddReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -190,8 +190,8 @@ var CmdService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _CmdService_CmdListFolder_Handler,
 		},
 		{
-			MethodName: "CmdSave",
-			Handler:    _CmdService_CmdSave_Handler,
+			MethodName: "CmdAdd",
+			Handler:    _CmdService_CmdAdd_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

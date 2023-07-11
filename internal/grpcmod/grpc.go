@@ -53,3 +53,11 @@ func (s *server) CmdListFolder(ctx context.Context, req *proto.CmdListFolderReq)
 	}
 	return res, nil
 }
+
+func (s *server) CmdAdd(ctx context.Context, req *proto.CmdAddReq) (*proto.CmdAddRes, error) {
+	res, err := s.handler.Cmd.Add(ctx, req)
+	if err != nil {
+		return nil, errgo.Wrap(err, "server.CmdAdd")
+	}
+	return res, nil
+}
