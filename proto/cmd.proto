@@ -23,12 +23,26 @@ message CmdItem {
   string value = 2;
 }
 
+message Command {
+  repeated CmdItem items = 1;
+}
+
 message CmdAddReq {
   repeated CmdItem items = 1;
 }
 
 message CmdAddRes {
   uint32 ID = 1;
+}
+
+message CmdListReq {
+  uint32 page = 1;
+  uint32 size = 2;
+}
+
+message CmdListRes {
+  uint32 count = 1;
+  repeated Command items = 2;
 }
 
 message FolderItem {
@@ -46,4 +60,5 @@ service CmdService {
   rpc CmdCall(Cmd) returns(stream CmdCallRes);
   rpc CmdListFolder(CmdListFolderReq) returns(CmdListFolderRes);
   rpc CmdAdd(CmdAddReq) returns(CmdAddRes);
+  rpc CmdList(CmdListReq) returns(CmdListRes);
 }

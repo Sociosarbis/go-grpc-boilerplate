@@ -179,3 +179,36 @@ func (cmd *Cmd) Add(ctx context.Context, req *proto.CmdAddReq) (*proto.CmdAddRes
 		ID: uint32(newCmd.ID),
 	}, nil
 }
+
+func (cmd *Cmd) List(ctx context.Context, req *proto.CmdListReq) (*proto.CmdListRes, error) {
+	claims, ok := ctx.Value(ctxkey.UseClaims).(*jwtgo.UserClaims)
+	if !ok {
+		return nil, errInvalidUser
+	}
+	var items []dao.Command
+	var count int64
+	var isCreator = func(db *gorm.DB) *gorm.DB {
+		return db.Where("creatorId = ?", claims.User.ID)
+	}
+	err := cmd.db.Scopes(isCreator).Offset(int((req.Page - 1) * req.Size)).Limit(int(req.Size)).Find(&items).Error
+	if err != nil {
+		return nil, errgo.Wrap(err, "List Find")
+	}
+	err = cmd.db.Scopes(isCreator).Count(&count).Error
+	if err != nil {
+		return nil, errgo.Wrap(err, "List Count")
+	}
+	return &proto.CmdListRes{
+		Count: uint32(count),
+		Items: slice.Map(items, func(item dao.Command) *proto.Command {
+			return &proto.Command{
+				Items: slice.Map(item.Data.Data().Items, func(item1 dao.CommandDataItem) *proto.CmdItem {
+					return &proto.CmdItem{
+						Type:  item1.Type,
+						Value: item1.Value,
+					}
+				}),
+			}
+		}),
+	}, nil
+}
