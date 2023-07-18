@@ -112,3 +112,22 @@ func (c *Cmd) Add(ctx *fiber.Ctx) error {
 
 	return res.Ok(ctx, r)
 }
+
+func (c *Cmd) List(ctx *fiber.Ctx) error {
+	params, ok := ctx.UserContext().Value(middleware.ParamsCtxKey).(req.CmdListDto)
+	if !ok {
+		return res.BadRequest(ctx, errcode.Unknown, "assert req.CmdListDto")
+	}
+
+	r, err := c.client.Cmd.CmdList(ctx.UserContext(), &proto.CmdListReq{
+		Page: params.Page,
+		Size: params.Size,
+	})
+
+	if err != nil {
+		c.common.Logger.Error("client.Cmd.CmdList", zap.Error(err))
+		return res.InternalError(ctx, errcode.Unknown, "client.Cmd.CmdList")
+	}
+
+	return res.Ok(ctx, r)
+}

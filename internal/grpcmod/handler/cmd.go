@@ -194,7 +194,7 @@ func (cmd *Cmd) List(ctx context.Context, req *proto.CmdListReq) (*proto.CmdList
 	if err != nil {
 		return nil, errgo.Wrap(err, "List Find")
 	}
-	err = cmd.db.Scopes(isCreator).Count(&count).Error
+	err = cmd.db.Model(&dao.Command{}).Scopes(isCreator).Count(&count).Error
 	if err != nil {
 		return nil, errgo.Wrap(err, "List Count")
 	}

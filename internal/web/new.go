@@ -112,6 +112,12 @@ func AddRouters(app *fiber.App, comm *common.Common, userHandler *handler.User, 
 			req.CmdAddDto{}).Build(),
 		cmdHandler.Add)
 
+	router.Get("/cmd/list", perRequestLimiterMiddleware, middleware.NewValidateReqBuilder(
+		comm.Validate,
+		middleware.ParamsTypeQuery,
+		req.CmdListDto{}).Build(),
+		cmdHandler.List)
+
 	wsRouter.Get("/user", websocket.New(userWsHandler.Handler))
 	app.Use(func(ctx *fiber.Ctx) error {
 		return res.NotFound(ctx, errcode.NotFound, "Not Found")

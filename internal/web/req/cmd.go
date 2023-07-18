@@ -17,3 +17,7 @@ type CmdItem struct {
 type CmdAddDto struct {
 	Items []CmdItem `json:"items" validate:"required,min=1"`
 }
+
+type CmdListDto struct {
+	Pager
+}

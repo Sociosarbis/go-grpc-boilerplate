@@ -61,3 +61,11 @@ func (s *server) CmdAdd(ctx context.Context, req *proto.CmdAddReq) (*proto.CmdAd
 	}
 	return res, nil
 }
+
+func (s *server) CmdList(ctx context.Context, req *proto.CmdListReq) (*proto.CmdListRes, error) {
+	res, err := s.handler.Cmd.List(ctx, req)
+	if err != nil {
+		return nil, errgo.Wrap(err, "server.CmdList")
+	}
+	return res, nil
+}
