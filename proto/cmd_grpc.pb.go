@@ -11,6 +11,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -26,6 +27,7 @@ type CmdServiceClient interface {
 	CmdListFolder(ctx context.Context, in *CmdListFolderReq, opts ...grpc.CallOption) (*CmdListFolderRes, error)
 	CmdAdd(ctx context.Context, in *CmdAddReq, opts ...grpc.CallOption) (*CmdAddRes, error)
 	CmdList(ctx context.Context, in *CmdListReq, opts ...grpc.CallOption) (*CmdListRes, error)
+	CmdUpdate(ctx context.Context, in *CmdUpdateReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type cmdServiceClient struct {
@@ -95,6 +97,15 @@ func (c *cmdServiceClient) CmdList(ctx context.Context, in *CmdListReq, opts ...
 	return out, nil
 }
 
+func (c *cmdServiceClient) CmdUpdate(ctx context.Context, in *CmdUpdateReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/proto.CmdService/CmdUpdate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CmdServiceServer is the server API for CmdService service.
 // All implementations must embed UnimplementedCmdServiceServer
 // for forward compatibility
@@ -103,6 +114,7 @@ type CmdServiceServer interface {
 	CmdListFolder(context.Context, *CmdListFolderReq) (*CmdListFolderRes, error)
 	CmdAdd(context.Context, *CmdAddReq) (*CmdAddRes, error)
 	CmdList(context.Context, *CmdListReq) (*CmdListRes, error)
+	CmdUpdate(context.Context, *CmdUpdateReq) (*emptypb.Empty, error)
 	mustEmbedUnimplementedCmdServiceServer()
 }
 
@@ -121,6 +133,9 @@ func (UnimplementedCmdServiceServer) CmdAdd(context.Context, *CmdAddReq) (*CmdAd
 }
 func (UnimplementedCmdServiceServer) CmdList(context.Context, *CmdListReq) (*CmdListRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CmdList not implemented")
+}
+func (UnimplementedCmdServiceServer) CmdUpdate(context.Context, *CmdUpdateReq) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CmdUpdate not implemented")
 }
 func (UnimplementedCmdServiceServer) mustEmbedUnimplementedCmdServiceServer() {}
 
@@ -210,6 +225,24 @@ func _CmdService_CmdList_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CmdService_CmdUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CmdUpdateReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CmdServiceServer).CmdUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.CmdService/CmdUpdate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CmdServiceServer).CmdUpdate(ctx, req.(*CmdUpdateReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // CmdService_ServiceDesc is the grpc.ServiceDesc for CmdService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -228,6 +261,10 @@ var CmdService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CmdList",
 			Handler:    _CmdService_CmdList_Handler,
+		},
+		{
+			MethodName: "CmdUpdate",
+			Handler:    _CmdService_CmdUpdate_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

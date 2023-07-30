@@ -18,6 +18,11 @@ type CmdAddDto struct {
 	Items []CmdItem `json:"items" validate:"required,min=1"`
 }
 
+type CmdUpdateDto struct {
+	ID    uint32    `json:"id" validate:"required,min=1"`
+	Items []CmdItem `json:"items" validate:"required,min=1"`
+}
+
 type CmdListDto struct {
 	Pager
 }

@@ -112,6 +112,14 @@ func AddRouters(app *fiber.App, comm *common.Common, userHandler *handler.User, 
 			req.CmdAddDto{}).Build(),
 		cmdHandler.Add)
 
+	router.Patch("/cmd",
+		perRequestLimiterMiddleware,
+		middleware.NewValidateReqBuilder(
+			comm.Validate,
+			middleware.ParamsTypeBody,
+			req.CmdUpdateDto{}).Build(),
+		cmdHandler.Update)
+
 	router.Get("/cmd/list", perRequestLimiterMiddleware, middleware.NewValidateReqBuilder(
 		comm.Validate,
 		middleware.ParamsTypeQuery,

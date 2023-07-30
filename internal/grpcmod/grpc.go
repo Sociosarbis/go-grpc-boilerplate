@@ -6,6 +6,7 @@ import (
 	"github.com/sociosarbis/grpc/boilerplate/internal/grpcmod/handler"
 	"github.com/sociosarbis/grpc/boilerplate/internal/pkg/errgo"
 	"github.com/sociosarbis/grpc/boilerplate/proto"
+	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 type server struct {
@@ -58,6 +59,14 @@ func (s *server) CmdAdd(ctx context.Context, req *proto.CmdAddReq) (*proto.CmdAd
 	res, err := s.handler.Cmd.Add(ctx, req)
 	if err != nil {
 		return nil, errgo.Wrap(err, "server.CmdAdd")
+	}
+	return res, nil
+}
+
+func (s *server) CmdUpdate(ctx context.Context, req *proto.CmdUpdateReq) (*emptypb.Empty, error) {
+	res, err := s.handler.Cmd.Update(ctx, req)
+	if err != nil {
+		return nil, errgo.Wrap(err, "server.CmdUpdate")
 	}
 	return res, nil
 }

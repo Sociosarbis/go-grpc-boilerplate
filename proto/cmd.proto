@@ -4,6 +4,8 @@ package proto;
 
 option go_package = "/proto";
 
+import "google/protobuf/empty.proto";
+
 message Cmd {
   string script = 1;
   string wd = 2;
@@ -24,7 +26,8 @@ message CmdItem {
 }
 
 message Command {
-  repeated CmdItem items = 1;
+  uint32 id = 1;
+  repeated CmdItem items = 2;
 }
 
 message CmdAddReq {
@@ -32,7 +35,12 @@ message CmdAddReq {
 }
 
 message CmdAddRes {
-  uint32 ID = 1;
+  uint32 id = 1;
+}
+
+message CmdUpdateReq {
+  uint32 id = 1;
+  repeated CmdItem items = 2;
 }
 
 message CmdListReq {
@@ -61,4 +69,5 @@ service CmdService {
   rpc CmdListFolder(CmdListFolderReq) returns(CmdListFolderRes);
   rpc CmdAdd(CmdAddReq) returns(CmdAddRes);
   rpc CmdList(CmdListReq) returns(CmdListRes);
+  rpc CmdUpdate(CmdUpdateReq) returns (google.protobuf.Empty);
 }

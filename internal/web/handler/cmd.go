@@ -113,6 +113,30 @@ func (c *Cmd) Add(ctx *fiber.Ctx) error {
 	return res.Ok(ctx, r)
 }
 
+func (c *Cmd) Update(ctx *fiber.Ctx) error {
+	params, ok := ctx.UserContext().Value(middleware.ParamsCtxKey).(req.CmdUpdateDto)
+	if !ok {
+		return res.BadRequest(ctx, errcode.Unknown, "assert req.CmdUpdateDto")
+	}
+
+	r, err := c.client.Cmd.CmdUpdate(ctx.UserContext(), &proto.CmdUpdateReq{
+		Id: params.ID,
+		Items: slice.Map(params.Items, func(item req.CmdItem) *proto.CmdItem {
+			return &proto.CmdItem{
+				Type:  item.Type,
+				Value: item.Value,
+			}
+		}),
+	})
+
+	if err != nil {
+		c.common.Logger.Error("client.Cmd.CmdAdd", zap.Error(err))
+		return res.InternalError(ctx, errcode.Unknown, "client.Cmd.CmdAdd")
+	}
+
+	return res.Ok(ctx, r)
+}
+
 func (c *Cmd) List(ctx *fiber.Ctx) error {
 	params, ok := ctx.UserContext().Value(middleware.ParamsCtxKey).(req.CmdListDto)
 	if !ok {

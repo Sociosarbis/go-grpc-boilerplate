@@ -13,6 +13,7 @@ import (
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/emptypb"
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
 
@@ -35,6 +36,8 @@ func NewCmd(db *gorm.DB) Cmd {
 }
 
 var errInvalidUser = errors.New("invalid user")
+
+var errNoEffect = errors.New("no effect")
 
 type CmdOptions struct {
 	Wd string
@@ -176,8 +179,30 @@ func (cmd *Cmd) Add(ctx context.Context, req *proto.CmdAddReq) (*proto.CmdAddRes
 		return nil, errgo.Wrap(err, "AddCmd")
 	}
 	return &proto.CmdAddRes{
-		ID: uint32(newCmd.ID),
+		Id: uint32(newCmd.ID),
 	}, nil
+}
+
+func (cmd *Cmd) Update(ctx context.Context, req *proto.CmdUpdateReq) (*emptypb.Empty, error) {
+	claims, ok := ctx.Value(ctxkey.UseClaims).(*jwtgo.UserClaims)
+	if !ok {
+		return nil, errInvalidUser
+	}
+	res := cmd.db.Model(&dao.Command{}).Where("id = ?", req.Id).Where("creatorId = ?", claims.User.ID).Update("data", datatypes.NewJSONType(dao.CommandData{
+		Items: slice.Map(req.Items, func(item *proto.CmdItem) dao.CommandDataItem {
+			return dao.CommandDataItem{
+				Type:  item.Type,
+				Value: item.Value,
+			}
+		}),
+	}))
+	if res.Error != nil {
+		return nil, errgo.Wrap(res.Error, "UpdateCmd")
+	}
+	if res.RowsAffected == 0 {
+		return nil, errNoEffect
+	}
+	return &emptypb.Empty{}, nil
 }
 
 func (cmd *Cmd) List(ctx context.Context, req *proto.CmdListReq) (*proto.CmdListRes, error) {
@@ -202,6 +227,7 @@ func (cmd *Cmd) List(ctx context.Context, req *proto.CmdListReq) (*proto.CmdList
 		Count: uint32(count),
 		Items: slice.Map(items, func(item dao.Command) *proto.Command {
 			return &proto.Command{
+				Id: uint32(item.ID),
 				Items: slice.Map(item.Data.Data().Items, func(item1 dao.CommandDataItem) *proto.CmdItem {
 					return &proto.CmdItem{
 						Type:  item1.Type,
