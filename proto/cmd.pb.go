@@ -382,6 +382,53 @@ func (x *CmdAddRes) GetId() uint32 {
 	return 0
 }
 
+type CmdDeleteReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id uint32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+}
+
+func (x *CmdDeleteReq) Reset() {
+	*x = CmdDeleteReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_cmd_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CmdDeleteReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CmdDeleteReq) ProtoMessage() {}
+
+func (x *CmdDeleteReq) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_cmd_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CmdDeleteReq.ProtoReflect.Descriptor instead.
+func (*CmdDeleteReq) Descriptor() ([]byte, []int) {
+	return file_proto_cmd_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *CmdDeleteReq) GetId() uint32 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
 type CmdUpdateReq struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -394,7 +441,7 @@ type CmdUpdateReq struct {
 func (x *CmdUpdateReq) Reset() {
 	*x = CmdUpdateReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_cmd_proto_msgTypes[7]
+		mi := &file_proto_cmd_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -407,7 +454,7 @@ func (x *CmdUpdateReq) String() string {
 func (*CmdUpdateReq) ProtoMessage() {}
 
 func (x *CmdUpdateReq) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_cmd_proto_msgTypes[7]
+	mi := &file_proto_cmd_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -420,7 +467,7 @@ func (x *CmdUpdateReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CmdUpdateReq.ProtoReflect.Descriptor instead.
 func (*CmdUpdateReq) Descriptor() ([]byte, []int) {
-	return file_proto_cmd_proto_rawDescGZIP(), []int{7}
+	return file_proto_cmd_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *CmdUpdateReq) GetId() uint32 {
@@ -449,7 +496,7 @@ type CmdListReq struct {
 func (x *CmdListReq) Reset() {
 	*x = CmdListReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_cmd_proto_msgTypes[8]
+		mi := &file_proto_cmd_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -462,7 +509,7 @@ func (x *CmdListReq) String() string {
 func (*CmdListReq) ProtoMessage() {}
 
 func (x *CmdListReq) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_cmd_proto_msgTypes[8]
+	mi := &file_proto_cmd_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -475,7 +522,7 @@ func (x *CmdListReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CmdListReq.ProtoReflect.Descriptor instead.
 func (*CmdListReq) Descriptor() ([]byte, []int) {
-	return file_proto_cmd_proto_rawDescGZIP(), []int{8}
+	return file_proto_cmd_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *CmdListReq) GetPage() uint32 {
@@ -504,7 +551,7 @@ type CmdListRes struct {
 func (x *CmdListRes) Reset() {
 	*x = CmdListRes{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_cmd_proto_msgTypes[9]
+		mi := &file_proto_cmd_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -517,7 +564,7 @@ func (x *CmdListRes) String() string {
 func (*CmdListRes) ProtoMessage() {}
 
 func (x *CmdListRes) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_cmd_proto_msgTypes[9]
+	mi := &file_proto_cmd_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -530,7 +577,7 @@ func (x *CmdListRes) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CmdListRes.ProtoReflect.Descriptor instead.
 func (*CmdListRes) Descriptor() ([]byte, []int) {
-	return file_proto_cmd_proto_rawDescGZIP(), []int{9}
+	return file_proto_cmd_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *CmdListRes) GetCount() uint32 {
@@ -559,7 +606,7 @@ type FolderItem struct {
 func (x *FolderItem) Reset() {
 	*x = FolderItem{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_cmd_proto_msgTypes[10]
+		mi := &file_proto_cmd_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -572,7 +619,7 @@ func (x *FolderItem) String() string {
 func (*FolderItem) ProtoMessage() {}
 
 func (x *FolderItem) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_cmd_proto_msgTypes[10]
+	mi := &file_proto_cmd_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -585,7 +632,7 @@ func (x *FolderItem) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FolderItem.ProtoReflect.Descriptor instead.
 func (*FolderItem) Descriptor() ([]byte, []int) {
-	return file_proto_cmd_proto_rawDescGZIP(), []int{10}
+	return file_proto_cmd_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *FolderItem) GetName() string {
@@ -613,7 +660,7 @@ type CmdListFolderRes struct {
 func (x *CmdListFolderRes) Reset() {
 	*x = CmdListFolderRes{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_cmd_proto_msgTypes[11]
+		mi := &file_proto_cmd_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -626,7 +673,7 @@ func (x *CmdListFolderRes) String() string {
 func (*CmdListFolderRes) ProtoMessage() {}
 
 func (x *CmdListFolderRes) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_cmd_proto_msgTypes[11]
+	mi := &file_proto_cmd_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -639,7 +686,7 @@ func (x *CmdListFolderRes) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CmdListFolderRes.ProtoReflect.Descriptor instead.
 func (*CmdListFolderRes) Descriptor() ([]byte, []int) {
-	return file_proto_cmd_proto_rawDescGZIP(), []int{11}
+	return file_proto_cmd_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *CmdListFolderRes) GetItems() []*FolderItem {
@@ -677,6 +724,8 @@ var file_proto_cmd_proto_rawDesc = []byte{
 	0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x43, 0x6d, 0x64, 0x49, 0x74, 0x65, 0x6d, 0x52, 0x05, 0x69, 0x74,
 	0x65, 0x6d, 0x73, 0x22, 0x1b, 0x0a, 0x09, 0x43, 0x6d, 0x64, 0x41, 0x64, 0x64, 0x52, 0x65, 0x73,
 	0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x02, 0x69, 0x64,
+	0x22, 0x1e, 0x0a, 0x0c, 0x43, 0x6d, 0x64, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x52, 0x65, 0x71,
+	0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x02, 0x69, 0x64,
 	0x22, 0x44, 0x0a, 0x0c, 0x43, 0x6d, 0x64, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71,
 	0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x02, 0x69, 0x64,
 	0x12, 0x24, 0x0a, 0x05, 0x69, 0x74, 0x65, 0x6d, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32,
@@ -697,7 +746,7 @@ var file_proto_cmd_proto_rawDesc = []byte{
 	0x46, 0x6f, 0x6c, 0x64, 0x65, 0x72, 0x52, 0x65, 0x73, 0x12, 0x27, 0x0a, 0x05, 0x69, 0x74, 0x65,
 	0x6d, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x11, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
 	0x2e, 0x46, 0x6f, 0x6c, 0x64, 0x65, 0x72, 0x49, 0x74, 0x65, 0x6d, 0x52, 0x05, 0x69, 0x74, 0x65,
-	0x6d, 0x73, 0x32, 0x94, 0x02, 0x0a, 0x0a, 0x43, 0x6d, 0x64, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63,
+	0x6d, 0x73, 0x32, 0xce, 0x02, 0x0a, 0x0a, 0x43, 0x6d, 0x64, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63,
 	0x65, 0x12, 0x2a, 0x0a, 0x07, 0x43, 0x6d, 0x64, 0x43, 0x61, 0x6c, 0x6c, 0x12, 0x0a, 0x2e, 0x70,
 	0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x43, 0x6d, 0x64, 0x1a, 0x11, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
 	0x2e, 0x43, 0x6d, 0x64, 0x43, 0x61, 0x6c, 0x6c, 0x52, 0x65, 0x73, 0x30, 0x01, 0x12, 0x41, 0x0a,
@@ -714,8 +763,12 @@ var file_proto_cmd_proto_rawDesc = []byte{
 	0x38, 0x0a, 0x09, 0x43, 0x6d, 0x64, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x12, 0x13, 0x2e, 0x70,
 	0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x43, 0x6d, 0x64, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x52, 0x65,
 	0x71, 0x1a, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x42, 0x08, 0x5a, 0x06, 0x2f, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x12, 0x38, 0x0a, 0x09, 0x43, 0x6d, 0x64,
+	0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x12, 0x13, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x43,
+	0x6d, 0x64, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x52, 0x65, 0x71, 0x1a, 0x16, 0x2e, 0x67, 0x6f,
+	0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d,
+	0x70, 0x74, 0x79, 0x42, 0x08, 0x5a, 0x06, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -730,7 +783,7 @@ func file_proto_cmd_proto_rawDescGZIP() []byte {
 	return file_proto_cmd_proto_rawDescData
 }
 
-var file_proto_cmd_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
+var file_proto_cmd_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_proto_cmd_proto_goTypes = []interface{}{
 	(*Cmd)(nil),              // 0: proto.Cmd
 	(*CmdCallRes)(nil),       // 1: proto.CmdCallRes
@@ -739,31 +792,34 @@ var file_proto_cmd_proto_goTypes = []interface{}{
 	(*Command)(nil),          // 4: proto.Command
 	(*CmdAddReq)(nil),        // 5: proto.CmdAddReq
 	(*CmdAddRes)(nil),        // 6: proto.CmdAddRes
-	(*CmdUpdateReq)(nil),     // 7: proto.CmdUpdateReq
-	(*CmdListReq)(nil),       // 8: proto.CmdListReq
-	(*CmdListRes)(nil),       // 9: proto.CmdListRes
-	(*FolderItem)(nil),       // 10: proto.FolderItem
-	(*CmdListFolderRes)(nil), // 11: proto.CmdListFolderRes
-	(*emptypb.Empty)(nil),    // 12: google.protobuf.Empty
+	(*CmdDeleteReq)(nil),     // 7: proto.CmdDeleteReq
+	(*CmdUpdateReq)(nil),     // 8: proto.CmdUpdateReq
+	(*CmdListReq)(nil),       // 9: proto.CmdListReq
+	(*CmdListRes)(nil),       // 10: proto.CmdListRes
+	(*FolderItem)(nil),       // 11: proto.FolderItem
+	(*CmdListFolderRes)(nil), // 12: proto.CmdListFolderRes
+	(*emptypb.Empty)(nil),    // 13: google.protobuf.Empty
 }
 var file_proto_cmd_proto_depIdxs = []int32{
 	3,  // 0: proto.Command.items:type_name -> proto.CmdItem
 	3,  // 1: proto.CmdAddReq.items:type_name -> proto.CmdItem
 	3,  // 2: proto.CmdUpdateReq.items:type_name -> proto.CmdItem
 	4,  // 3: proto.CmdListRes.items:type_name -> proto.Command
-	10, // 4: proto.CmdListFolderRes.items:type_name -> proto.FolderItem
+	11, // 4: proto.CmdListFolderRes.items:type_name -> proto.FolderItem
 	0,  // 5: proto.CmdService.CmdCall:input_type -> proto.Cmd
 	2,  // 6: proto.CmdService.CmdListFolder:input_type -> proto.CmdListFolderReq
 	5,  // 7: proto.CmdService.CmdAdd:input_type -> proto.CmdAddReq
-	8,  // 8: proto.CmdService.CmdList:input_type -> proto.CmdListReq
-	7,  // 9: proto.CmdService.CmdUpdate:input_type -> proto.CmdUpdateReq
-	1,  // 10: proto.CmdService.CmdCall:output_type -> proto.CmdCallRes
-	11, // 11: proto.CmdService.CmdListFolder:output_type -> proto.CmdListFolderRes
-	6,  // 12: proto.CmdService.CmdAdd:output_type -> proto.CmdAddRes
-	9,  // 13: proto.CmdService.CmdList:output_type -> proto.CmdListRes
-	12, // 14: proto.CmdService.CmdUpdate:output_type -> google.protobuf.Empty
-	10, // [10:15] is the sub-list for method output_type
-	5,  // [5:10] is the sub-list for method input_type
+	9,  // 8: proto.CmdService.CmdList:input_type -> proto.CmdListReq
+	8,  // 9: proto.CmdService.CmdUpdate:input_type -> proto.CmdUpdateReq
+	7,  // 10: proto.CmdService.CmdDelete:input_type -> proto.CmdDeleteReq
+	1,  // 11: proto.CmdService.CmdCall:output_type -> proto.CmdCallRes
+	12, // 12: proto.CmdService.CmdListFolder:output_type -> proto.CmdListFolderRes
+	6,  // 13: proto.CmdService.CmdAdd:output_type -> proto.CmdAddRes
+	10, // 14: proto.CmdService.CmdList:output_type -> proto.CmdListRes
+	13, // 15: proto.CmdService.CmdUpdate:output_type -> google.protobuf.Empty
+	13, // 16: proto.CmdService.CmdDelete:output_type -> google.protobuf.Empty
+	11, // [11:17] is the sub-list for method output_type
+	5,  // [5:11] is the sub-list for method input_type
 	5,  // [5:5] is the sub-list for extension type_name
 	5,  // [5:5] is the sub-list for extension extendee
 	0,  // [0:5] is the sub-list for field type_name
@@ -860,7 +916,7 @@ func file_proto_cmd_proto_init() {
 			}
 		}
 		file_proto_cmd_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CmdUpdateReq); i {
+			switch v := v.(*CmdDeleteReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -872,7 +928,7 @@ func file_proto_cmd_proto_init() {
 			}
 		}
 		file_proto_cmd_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CmdListReq); i {
+			switch v := v.(*CmdUpdateReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -884,7 +940,7 @@ func file_proto_cmd_proto_init() {
 			}
 		}
 		file_proto_cmd_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CmdListRes); i {
+			switch v := v.(*CmdListReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -896,7 +952,7 @@ func file_proto_cmd_proto_init() {
 			}
 		}
 		file_proto_cmd_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*FolderItem); i {
+			switch v := v.(*CmdListRes); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -908,6 +964,18 @@ func file_proto_cmd_proto_init() {
 			}
 		}
 		file_proto_cmd_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*FolderItem); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_cmd_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*CmdListFolderRes); i {
 			case 0:
 				return &v.state
@@ -926,7 +994,7 @@ func file_proto_cmd_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_proto_cmd_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   12,
+			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

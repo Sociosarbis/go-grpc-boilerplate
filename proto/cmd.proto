@@ -38,6 +38,10 @@ message CmdAddRes {
   uint32 id = 1;
 }
 
+message CmdDeleteReq {
+  uint32 id = 1;
+}
+
 message CmdUpdateReq {
   uint32 id = 1;
   repeated CmdItem items = 2;
@@ -70,4 +74,5 @@ service CmdService {
   rpc CmdAdd(CmdAddReq) returns(CmdAddRes);
   rpc CmdList(CmdListReq) returns(CmdListRes);
   rpc CmdUpdate(CmdUpdateReq) returns (google.protobuf.Empty);
+  rpc CmdDelete(CmdDeleteReq) returns (google.protobuf.Empty);
 }

@@ -205,6 +205,18 @@ func (cmd *Cmd) Update(ctx context.Context, req *proto.CmdUpdateReq) (*emptypb.E
 	return &emptypb.Empty{}, nil
 }
 
+func (cmd *Cmd) Delete(ctx context.Context, req *proto.CmdDeleteReq) (*emptypb.Empty, error) {
+	claims, ok := ctx.Value(ctxkey.UseClaims).(*jwtgo.UserClaims)
+	if !ok {
+		return nil, errInvalidUser
+	}
+	res := cmd.db.Where("id = ?", req.Id).Where("creatorId = ?", claims.User.ID).Delete(&dao.Command{})
+	if res.RowsAffected == 0 {
+		return nil, errNoEffect
+	}
+	return &emptypb.Empty{}, nil
+}
+
 func (cmd *Cmd) List(ctx context.Context, req *proto.CmdListReq) (*proto.CmdListRes, error) {
 	claims, ok := ctx.Value(ctxkey.UseClaims).(*jwtgo.UserClaims)
 	if !ok {

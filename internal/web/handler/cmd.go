@@ -137,6 +137,24 @@ func (c *Cmd) Update(ctx *fiber.Ctx) error {
 	return res.Ok(ctx, r)
 }
 
+func (c *Cmd) Delete(ctx *fiber.Ctx) error {
+	params, ok := ctx.UserContext().Value(middleware.ParamsCtxKey).(req.CmdDeleteDto)
+	if !ok {
+		return res.BadRequest(ctx, errcode.Unknown, "assert req.CmdDeleteDto")
+	}
+
+	r, err := c.client.Cmd.CmdDelete(ctx.UserContext(), &proto.CmdDeleteReq{
+		Id: params.ID,
+	})
+
+	if err != nil {
+		c.common.Logger.Error("client.Cmd.CmdDelete", zap.Error(err))
+		return res.InternalError(ctx, errcode.Unknown, "client.Cmd.CmdDelete")
+	}
+
+	return res.Ok(ctx, r)
+}
+
 func (c *Cmd) List(ctx *fiber.Ctx) error {
 	params, ok := ctx.UserContext().Value(middleware.ParamsCtxKey).(req.CmdListDto)
 	if !ok {

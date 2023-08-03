@@ -120,6 +120,14 @@ func AddRouters(app *fiber.App, comm *common.Common, userHandler *handler.User, 
 			req.CmdUpdateDto{}).Build(),
 		cmdHandler.Update)
 
+	router.Delete("/cmd/:id",
+		perRequestLimiterMiddleware,
+		middleware.NewValidateReqBuilder(
+			comm.Validate,
+			middleware.ParamsTypeParams,
+			req.CmdDeleteDto{}).Build(),
+		cmdHandler.Delete)
+
 	router.Get("/cmd/list", perRequestLimiterMiddleware, middleware.NewValidateReqBuilder(
 		comm.Validate,
 		middleware.ParamsTypeQuery,

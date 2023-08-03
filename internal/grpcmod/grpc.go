@@ -71,6 +71,14 @@ func (s *server) CmdUpdate(ctx context.Context, req *proto.CmdUpdateReq) (*empty
 	return res, nil
 }
 
+func (s *server) CmdDelete(ctx context.Context, req *proto.CmdDeleteReq) (*emptypb.Empty, error) {
+	res, err := s.handler.Cmd.Delete(ctx, req)
+	if err != nil {
+		return nil, errgo.Wrap(err, "server.CmdDelete")
+	}
+	return res, nil
+}
+
 func (s *server) CmdList(ctx context.Context, req *proto.CmdListReq) (*proto.CmdListRes, error) {
 	res, err := s.handler.Cmd.List(ctx, req)
 	if err != nil {
