@@ -2,10 +2,14 @@ package res
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
+	"github.com/sociosarbis/grpc/boilerplate/internal/errcode"
 	"github.com/sociosarbis/grpc/boilerplate/internal/pkg/errgo"
 )
 
@@ -43,6 +47,23 @@ func NotFound(ctx *fiber.Ctx, code int, msg string) error {
 
 func InternalError(ctx *fiber.Ctx, code int, msg string) error {
 	return Err(ctx, http.StatusInternalServerError, code, msg)
+}
+
+func GrpcError(ctx *fiber.Ctx, err error, msg string) error {
+	innerErr := err
+	for {
+		s, ok := status.FromError(innerErr)
+		if ok {
+			if s.Code() == codes.Unauthenticated {
+				return Err(ctx, http.StatusUnauthorized, errcode.Unauthorized, msg)
+			}
+			break
+		}
+		if innerErr = errors.Unwrap(innerErr); innerErr == nil {
+			break
+		}
+	}
+	return InternalError(ctx, errcode.Unknown, msg)
 }
 
 func WriteJSON[T any](ctx *fiber.Ctx, msg T) error {

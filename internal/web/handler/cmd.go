@@ -3,7 +3,6 @@ package handler
 import (
 	"errors"
 	"io"
-	"net/http"
 
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
@@ -42,7 +41,7 @@ func (c *Cmd) Call(ctx *fiber.Ctx) error {
 
 	if err != nil {
 		c.common.Logger.Error("client.Cmd.CmdCall", zap.Error(err))
-		return res.InternalError(ctx, errcode.Unknown, "client.Cmd.CmdCall")
+		return res.GrpcError(ctx, err, "client.Cmd.CmdCall")
 	}
 
 	for {
@@ -67,7 +66,7 @@ func (c *Cmd) Call(ctx *fiber.Ctx) error {
 	}
 	if !errors.Is(err, io.EOF) {
 		c.common.Logger.Error("client.Recv", zap.Error(err))
-		return res.InternalError(ctx, http.StatusInternalServerError, "Cmd.CmdCall")
+		return res.GrpcError(ctx, err, "Cmd.CmdCall")
 	}
 	return nil
 }
@@ -84,7 +83,7 @@ func (c *Cmd) ListFolder(ctx *fiber.Ctx) error {
 
 	if err != nil {
 		c.common.Logger.Error("client.Cmd.CmdListFolder", zap.Error(err))
-		return res.InternalError(ctx, errcode.Unknown, "client.Cmd.CmdListFolder")
+		return res.GrpcError(ctx, err, "client.Cmd.CmdListFolder")
 	}
 
 	return res.Ok(ctx, r)
@@ -107,7 +106,7 @@ func (c *Cmd) Add(ctx *fiber.Ctx) error {
 
 	if err != nil {
 		c.common.Logger.Error("client.Cmd.CmdAdd", zap.Error(err))
-		return res.InternalError(ctx, errcode.Unknown, "client.Cmd.CmdAdd")
+		return res.GrpcError(ctx, err, "client.Cmd.CmdAdd")
 	}
 
 	return res.Ok(ctx, r)
@@ -131,7 +130,7 @@ func (c *Cmd) Update(ctx *fiber.Ctx) error {
 
 	if err != nil {
 		c.common.Logger.Error("client.Cmd.CmdAdd", zap.Error(err))
-		return res.InternalError(ctx, errcode.Unknown, "client.Cmd.CmdAdd")
+		return res.GrpcError(ctx, err, "client.Cmd.CmdAdd")
 	}
 
 	return res.Ok(ctx, r)
@@ -149,7 +148,7 @@ func (c *Cmd) Delete(ctx *fiber.Ctx) error {
 
 	if err != nil {
 		c.common.Logger.Error("client.Cmd.CmdDelete", zap.Error(err))
-		return res.InternalError(ctx, errcode.Unknown, "client.Cmd.CmdDelete")
+		return res.GrpcError(ctx, err, "client.Cmd.CmdDelete")
 	}
 
 	return res.Ok(ctx, r)
@@ -168,7 +167,7 @@ func (c *Cmd) List(ctx *fiber.Ctx) error {
 
 	if err != nil {
 		c.common.Logger.Error("client.Cmd.CmdList", zap.Error(err))
-		return res.InternalError(ctx, errcode.Unknown, "client.Cmd.CmdList")
+		return res.GrpcError(ctx, err, "client.Cmd.CmdList")
 	}
 
 	return res.Ok(ctx, r)

@@ -36,7 +36,7 @@ func (u *User) Detail(ctx *fiber.Ctx) error {
 
 	if err != nil {
 		u.common.Logger.Error("client.User.UserDetail", zap.Error(err))
-		return res.InternalError(ctx, errcode.Unknown, "client.User.UserDetail")
+		return res.GrpcError(ctx, err, "client.User.UserDetail")
 	}
 	return res.Ok(ctx, r)
 }
@@ -51,7 +51,7 @@ func (u *User) LoginMs(ctx *fiber.Ctx) error {
 	})
 	if err != nil {
 		u.common.Logger.Error("client.User.UserMsLogin", zap.Error(err))
-		return res.InternalError(ctx, errcode.Unknown, "client.User.UserMsLogin")
+		return res.GrpcError(ctx, err, "client.User.UserMsLogin")
 	}
 	return res.Ok(ctx, r)
 }
