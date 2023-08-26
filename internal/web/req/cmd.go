@@ -10,8 +10,9 @@ type CmdListFolderDto struct {
 }
 
 type CmdItem struct {
-	Type  string `json:"type" validate:"required,oneof=exec path dateTime"`
-	Value string `json:"value" validate:"required,min=1"`
+	Type   string  `json:"type" validate:"required,oneof=exec path dateTime"`
+	Value  string  `json:"value" validate:"required,min=1"`
+	Config *string `json:"config" validate:"min=1"`
 }
 
 type CmdAddDto struct {

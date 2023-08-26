@@ -23,6 +23,7 @@ message CmdListFolderReq {
 message CmdItem {
   string type = 1;
   string value = 2;
+  optional string config = 3;
 }
 
 message Command {

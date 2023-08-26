@@ -6,8 +6,9 @@ import (
 )
 
 type CommandDataItem struct {
-	Type  string
-	Value string
+	Type   string
+	Value  string
+	Config *string
 }
 
 type CommandData struct {

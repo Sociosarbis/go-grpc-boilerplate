@@ -163,8 +163,9 @@ func (cmd *Cmd) Add(ctx context.Context, req *proto.CmdAddReq) (*proto.CmdAddRes
 		Data: datatypes.NewJSONType(dao.CommandData{
 			Items: slice.Map(req.Items, func(item *proto.CmdItem) dao.CommandDataItem {
 				return dao.CommandDataItem{
-					Type:  item.Type,
-					Value: item.Value,
+					Type:   item.Type,
+					Value:  item.Value,
+					Config: item.Config,
 				}
 			}),
 		}),
@@ -191,8 +192,9 @@ func (cmd *Cmd) Update(ctx context.Context, req *proto.CmdUpdateReq) (*emptypb.E
 	res := cmd.db.Model(&dao.Command{}).Where("id = ?", req.Id).Where("creatorId = ?", claims.User.ID).Update("data", datatypes.NewJSONType(dao.CommandData{
 		Items: slice.Map(req.Items, func(item *proto.CmdItem) dao.CommandDataItem {
 			return dao.CommandDataItem{
-				Type:  item.Type,
-				Value: item.Value,
+				Type:   item.Type,
+				Value:  item.Value,
+				Config: item.Config,
 			}
 		}),
 	}))
@@ -242,8 +244,9 @@ func (cmd *Cmd) List(ctx context.Context, req *proto.CmdListReq) (*proto.CmdList
 				Id: uint32(item.ID),
 				Items: slice.Map(item.Data.Data().Items, func(item1 dao.CommandDataItem) *proto.CmdItem {
 					return &proto.CmdItem{
-						Type:  item1.Type,
-						Value: item1.Value,
+						Type:   item1.Type,
+						Value:  item1.Value,
+						Config: item1.Config,
 					}
 				}),
 			}

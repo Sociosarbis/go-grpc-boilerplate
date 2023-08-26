@@ -98,8 +98,9 @@ func (c *Cmd) Add(ctx *fiber.Ctx) error {
 	r, err := c.client.Cmd.CmdAdd(ctx.UserContext(), &proto.CmdAddReq{
 		Items: slice.Map(params.Items, func(item req.CmdItem) *proto.CmdItem {
 			return &proto.CmdItem{
-				Type:  item.Type,
-				Value: item.Value,
+				Type:   item.Type,
+				Value:  item.Value,
+				Config: item.Config,
 			}
 		}),
 	})
@@ -122,8 +123,9 @@ func (c *Cmd) Update(ctx *fiber.Ctx) error {
 		Id: params.ID,
 		Items: slice.Map(params.Items, func(item req.CmdItem) *proto.CmdItem {
 			return &proto.CmdItem{
-				Type:  item.Type,
-				Value: item.Value,
+				Type:   item.Type,
+				Value:  item.Value,
+				Config: item.Config,
 			}
 		}),
 	})
