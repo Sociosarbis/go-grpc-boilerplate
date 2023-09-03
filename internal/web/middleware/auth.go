@@ -13,6 +13,7 @@ func AttachToken(ctx *fiber.Ctx) error {
 		values := strings.Split(value, " ")
 		if len(values) == 2 {
 			if values[0] == "Bearer" {
+				ctx.Context().SetUserValue("authorization", values[1])
 				ctx.SetUserContext(metadata.AppendToOutgoingContext(ctx.UserContext(), "authorization", values[1]))
 			}
 		}

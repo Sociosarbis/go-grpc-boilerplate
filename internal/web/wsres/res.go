@@ -6,6 +6,12 @@ type Response[T any] struct {
 	Data *T     `json:"data,omitempty"`
 }
 
+type SeqFrame[T any] struct {
+	SeqId    string      `json:"SeqId"`
+	Index    int         `json:"index"`
+	Response Response[T] `json:"response"`
+}
+
 type empty struct{}
 
 func Ok[T any](data *T) Response[T] {
@@ -21,5 +27,13 @@ func Err(code int, msg string) Response[empty] {
 		code,
 		msg,
 		nil,
+	}
+}
+
+func Seq[T any](id string, index int, res Response[T]) SeqFrame[T] {
+	return SeqFrame[T]{
+		id,
+		index,
+		res,
 	}
 }
