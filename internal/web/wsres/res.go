@@ -7,7 +7,7 @@ type Response[T any] struct {
 }
 
 type SeqFrame[T any] struct {
-	SeqId    string      `json:"SeqId"`
+	SeqId    string      `json:"seq_id"`
 	Index    int         `json:"index"`
 	Response Response[T] `json:"response"`
 }

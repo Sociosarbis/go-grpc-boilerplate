@@ -31,7 +31,7 @@ func Start(c config.AppConfig, app *fiber.App) error {
 	return errgo.Wrap(app.Listen(c.ListenAddr()), "fiber.App.Listen")
 }
 
-func New(comm *common.Common, userHandler *handler.User, cmdHandler *handler.Cmd, userWsHandler *wshandler.User) *fiber.App {
+func New(comm *common.Common, userHandler *handler.User, cmdHandler *handler.Cmd, userWsHandler *wshandler.User, cmdWsHandler *wshandler.Cmd) *fiber.App {
 	app := fiber.New(fiber.Config{
 		DisableStartupMessage: true,
 		StrictRouting:         true,
@@ -40,24 +40,24 @@ func New(comm *common.Common, userHandler *handler.User, cmdHandler *handler.Cmd
 
 	app.Use(recover.New(), cors.New())
 
-	AddRouters(app, comm, userHandler, cmdHandler, userWsHandler)
+	AddRouters(app, comm, userHandler, cmdHandler, userWsHandler, cmdWsHandler)
 
 	return app
 }
 
-func NewTestApp(userHandler *handler.User, comm *common.Common, cmdHandler *handler.Cmd, userWsHandler *wshandler.User) *fiber.App {
+func NewTestApp(userHandler *handler.User, comm *common.Common, cmdHandler *handler.Cmd, userWsHandler *wshandler.User, cmdWsHandler *wshandler.Cmd) *fiber.App {
 	app := fiber.New(fiber.Config{
 		DisableStartupMessage: true,
 		StrictRouting:         true,
 		CaseSensitive:         true,
 	})
 
-	AddRouters(app, comm, userHandler, cmdHandler, userWsHandler)
+	AddRouters(app, comm, userHandler, cmdHandler, userWsHandler, cmdWsHandler)
 
 	return app
 }
 
-func AddRouters(app *fiber.App, comm *common.Common, userHandler *handler.User, cmdHandler *handler.Cmd, userWsHandler *wshandler.User) {
+func AddRouters(app *fiber.App, comm *common.Common, userHandler *handler.User, cmdHandler *handler.Cmd, userWsHandler *wshandler.User, cmdWsHandler *wshandler.Cmd) {
 	perRequestLimiterMiddleware := limiter.New(limiter.Config{
 		Max:        1,
 		Expiration: throttleTime,
@@ -133,6 +133,8 @@ func AddRouters(app *fiber.App, comm *common.Common, userHandler *handler.User, 
 		middleware.ParamsTypeQuery,
 		req.CmdListDto{}).Build(),
 		cmdHandler.List)
+
+	wsRouter.Get("/cmd", websocket.New(cmdWsHandler.Handle))
 
 	wsRouter.Get("/user", websocket.New(userWsHandler.Handle))
 	app.Use(func(ctx *fiber.Ctx) error {
