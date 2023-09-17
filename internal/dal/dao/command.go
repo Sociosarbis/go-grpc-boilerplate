@@ -17,6 +17,7 @@ type CommandData struct {
 
 type Command struct {
 	gorm.Model
+	Name      string `gorm:"type:varchar(255);"`
 	Data      datatypes.JSONType[CommandData]
 	CreatorId uint   `gorm:"column:creatorId"`
 	Creator   User   `gorm:"foreginKey:creatorId"`

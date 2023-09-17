@@ -120,7 +120,8 @@ func (c *Cmd) Update(ctx *fiber.Ctx) error {
 	}
 
 	r, err := c.client.Cmd.CmdUpdate(ctx.UserContext(), &proto.CmdUpdateReq{
-		Id: params.ID,
+		Id:   params.ID,
+		Name: params.Name,
 		Items: slice.Map(params.Items, func(item req.CmdItem) *proto.CmdItem {
 			return &proto.CmdItem{
 				Type:   item.Type,

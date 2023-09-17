@@ -29,6 +29,7 @@ message CmdItem {
 message Command {
   uint32 id = 1;
   repeated CmdItem items = 2;
+  optional string name = 3;
 }
 
 message CmdAddReq {
@@ -46,6 +47,7 @@ message CmdDeleteReq {
 message CmdUpdateReq {
   uint32 id = 1;
   repeated CmdItem items = 2;
+  optional string name = 3;
 }
 
 message CmdListReq {

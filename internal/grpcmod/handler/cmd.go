@@ -189,15 +189,22 @@ func (cmd *Cmd) Update(ctx context.Context, req *proto.CmdUpdateReq) (*emptypb.E
 	if !ok {
 		return nil, errInvalidUser
 	}
-	res := cmd.db.Model(&dao.Command{}).Where("id = ?", req.Id).Where("creatorId = ?", claims.User.ID).Update("data", datatypes.NewJSONType(dao.CommandData{
-		Items: slice.Map(req.Items, func(item *proto.CmdItem) dao.CommandDataItem {
-			return dao.CommandDataItem{
-				Type:   item.Type,
-				Value:  item.Value,
-				Config: item.Config,
-			}
-		}),
-	}))
+	nextCmd := &dao.Command{}
+	if req.Items != nil {
+		nextCmd.Data = datatypes.NewJSONType(dao.CommandData{
+			Items: slice.Map(req.Items, func(item *proto.CmdItem) dao.CommandDataItem {
+				return dao.CommandDataItem{
+					Type:   item.Type,
+					Value:  item.Value,
+					Config: item.Config,
+				}
+			}),
+		})
+	}
+	if req.Name != nil {
+		nextCmd.Name = *req.Name
+	}
+	res := cmd.db.Model(nextCmd).Where("id = ?", req.Id).Where("creatorId = ?", claims.User.ID).Updates(nextCmd)
 	if res.Error != nil {
 		return nil, errgo.Wrap(res.Error, "UpdateCmd")
 	}
@@ -241,7 +248,8 @@ func (cmd *Cmd) List(ctx context.Context, req *proto.CmdListReq) (*proto.CmdList
 		Count: uint32(count),
 		Items: slice.Map(items, func(item dao.Command) *proto.Command {
 			return &proto.Command{
-				Id: uint32(item.ID),
+				Id:   uint32(item.ID),
+				Name: &item.Name,
 				Items: slice.Map(item.Data.Data().Items, func(item1 dao.CommandDataItem) *proto.CmdItem {
 					return &proto.CmdItem{
 						Type:   item1.Type,
