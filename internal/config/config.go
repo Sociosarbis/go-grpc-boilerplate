@@ -10,6 +10,10 @@ type AppConfig struct {
 	MySQLDatabase string `yaml:"mysql_db" env:"MYSQL_DB"`
 	MySQLMaxConn  int    `yaml:"mysql_max_connection" env:"MYSQL_MAX_CONNECTION"`
 
+	RedisHost     string `yaml:"redis_host" env:"REDIS_HOST"`
+	RedisPort     string `yaml:"redis_port" env:"REDIS_PORT"`
+	RedisPassword string `yaml:"redis_pass" env:"REDIS_PASS"`
+
 	HTTPHost string `yaml:"http_host" env:"HTTP_HOST"`
 	HTTPPort int    `yaml:"http_port" env:"HTTP_PORT"`
 

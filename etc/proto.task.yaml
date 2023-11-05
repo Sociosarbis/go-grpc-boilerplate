@@ -8,6 +8,7 @@ tasks:
       cmds:
         - task: user-proto
         - task: cmd-proto
+        - task: id-proto
 
   base-proto:
     cmds:
@@ -34,3 +35,14 @@ tasks:
       - task: base-proto
         vars:
           FILE: ./proto/user.proto
+  
+  id-proto:
+    sources:
+      - ./proto/id.proto
+    generates:
+      - ./proto/id_grpc.pb.go
+      - ./proto/id.pb.go
+    cmds:
+      - task: base-proto
+        vars:
+          FILE: ./proto/id.proto

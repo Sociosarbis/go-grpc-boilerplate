@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package proto;
+
+option go_package = "/proto";
+
+message IDGenerateReq {
+  string key = 1;
+}
+
+message IDGenerateRes {
+  uint64 id = 1;
+}
+
+
+service IDService {
+  rpc IDGenerate(IDGenerateReq) returns(IDGenerateRes);
+}
