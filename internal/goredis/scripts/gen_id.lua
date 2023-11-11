@@ -1,12 +1,12 @@
-local key = KEYS[1]
+local prefix = KEYS[1]
 
 local data_center_id = ARGV[1]
 
 local worker_id = ARGV[2]
 
-local last_timestamp_key = key.."_last_timestamp"
+local last_timestamp_key = prefix.."_last_timestamp"
 
-local sequence_key = key.."_sequence"
+local sequence_key = prefix.."_sequence"
 
 local last_timestamp = redis.call("GET", last_timestamp_key)
 
