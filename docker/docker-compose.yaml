@@ -20,4 +20,15 @@ services:
       - "8080:80"
     environment:
       - PMA_ARBITRARY=1
+  redis:
+    image: redis:latest
+    restart: unless-stopped
+    command: redis-server --requirepass $${REDIS_PASS} /usr/local/etc/redis/redis.conf
+    ports:
+      - "6379:6379"
+    environment:
+      REDIS_PASS: password
+    volumes:
+      - ./data/redis:/data
+      - ./config/redis.conf:/usr/local/etc/redis/redis.conf
 

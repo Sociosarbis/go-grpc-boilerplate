@@ -3,7 +3,9 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 
+	"github.com/sociosarbis/grpc/boilerplate/cmd/cronjob"
 	"github.com/sociosarbis/grpc/boilerplate/cmd/db"
+	"github.com/sociosarbis/grpc/boilerplate/cmd/redis"
 	"github.com/sociosarbis/grpc/boilerplate/cmd/ui"
 	"github.com/sociosarbis/grpc/boilerplate/cmd/web"
 )
@@ -20,5 +22,5 @@ var Root = cobra.Command{ //nolint:gochecknoglobals
 }
 
 func init() { //nolint:gochecknoinits
-	Root.AddCommand(ui.Command, web.Command, db.Command)
+	Root.AddCommand(ui.Command, web.Command, db.Command, redis.Command, cronjob.Command)
 }

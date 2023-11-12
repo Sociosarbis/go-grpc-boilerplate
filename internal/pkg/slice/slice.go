@@ -11,3 +11,12 @@ func Map[T any, K any, F func(item T) K](in []T, fn F) []K {
 
 	return s
 }
+
+func ToMap[T comparable](in []T) map[T]any {
+	m := make(map[T]any, len(in))
+	var empty interface{}
+	for _, v := range in {
+		m[v] = empty
+	}
+	return m
+}

@@ -11,6 +11,7 @@ import (
 	"github.com/sociosarbis/grpc/boilerplate/internal/config"
 	"github.com/sociosarbis/grpc/boilerplate/internal/dal"
 	"github.com/sociosarbis/grpc/boilerplate/internal/driver"
+	"github.com/sociosarbis/grpc/boilerplate/internal/goredis"
 	"github.com/sociosarbis/grpc/boilerplate/internal/grpcmod"
 	"github.com/sociosarbis/grpc/boilerplate/internal/jwtgo"
 	"github.com/sociosarbis/grpc/boilerplate/internal/pkg/errgo"
@@ -38,6 +39,7 @@ func start() error {
 		fx.Provide(logger.Copy, driver.NewMysqlConnectionPool, jwtgo.NewJWTManager),
 		web.Module,
 		dal.Module,
+		goredis.Module,
 		grpcmod.Module,
 		fx.Populate(&cfg, &app, &grpcSrv, &db),
 	).Err()
