@@ -1,6 +1,6 @@
 local prefix = KEYS[1];
 
-local list_key = prefix..'list'
+local list_key = prefix..'_list'
 
 local count = redis.call('LLEN', list_key)
 

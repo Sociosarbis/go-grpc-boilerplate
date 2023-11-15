@@ -18,7 +18,7 @@ func Seed(item string) error {
 	var cfg config.AppConfig
 	var clients *goredis.RedisClients
 
-	err := fx.New(config.Module, goredis.Module, fx.Populate(&cfg, &clients)).Err()
+	err := fx.New(fx.NopLogger, config.Module, goredis.Module, fx.Populate(&cfg, &clients)).Err()
 
 	if err != nil {
 		return errgo.Wrap(err, "fx.New")

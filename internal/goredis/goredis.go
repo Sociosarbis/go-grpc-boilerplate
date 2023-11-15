@@ -2,6 +2,7 @@ package goredis
 
 import (
 	"context"
+	_ "embed"
 	"errors"
 	"fmt"
 
@@ -22,16 +23,16 @@ type RedisClients struct {
 	scripts
 }
 
-// go:embed scripts/gen_id.lua
+//go:embed scripts/gen_id.lua
 var genIDFile string
 
-// go:embed scripts/alloc_worker_id.lua
+//go:embed scripts/alloc_worker_id.lua
 var allocWorkerIDFile string
 
-// go:embed scripts/expire_worker_id.lua
+//go:embed scripts/expire_worker_id.lua
 var expireWorkerIDFile string
 
-// go:embed scripts/seed_worker_id.lua
+//go:embed scripts/seed_worker_id.lua
 var seedWorkerIDFile string
 
 var errorGenID = errors.New("gen id error")
@@ -86,7 +87,7 @@ func (c *RedisClients) ExpireWorkerID(ctx context.Context, client *redis.Client,
 }
 
 func (c *RedisClients) SeedWorkerID(ctx context.Context, client *redis.Client, key string) error {
-	err := c.scripts.seedWorkerID.Run(ctx, client, []string{key}).Err()
+	err := c.scripts.seedWorkerID.Run(ctx, client, []string{key}, 32).Err()
 	if err != nil {
 		logger.Err(err, "redis.SeedWorkerID")
 		return errorSeedWorkerID

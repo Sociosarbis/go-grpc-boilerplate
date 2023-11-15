@@ -13,3 +13,5 @@ if #ids ~= 0 then
   redis.call('ZREMRANGEBYSCORE', 0, expired_max)
   redis.call('LPUSH', list_key, table.unpack(ids))
 end
+
+return 0

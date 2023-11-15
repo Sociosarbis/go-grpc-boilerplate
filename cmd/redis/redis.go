@@ -1,6 +1,8 @@
 package redis
 
-import "github.com/spf13/cobra"
+import (
+	"github.com/spf13/cobra"
+)
 
 var Command = &cobra.Command{
 	Use:   "redis [command]",
