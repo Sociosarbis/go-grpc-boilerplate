@@ -19,9 +19,9 @@ var Command = &cobra.Command{
 	Short: "run cronjob",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var scheduler *gocron.Scheduler
-		err := fx.New(config.Module, goredis.Module, fx.Provide(func() *gocron.Scheduler {
+		err := fx.New(fx.NopLogger, config.Module, goredis.Module, fx.Provide(func() *gocron.Scheduler {
 			return gocron.NewScheduler(time.Local)
-		}, fx.Provide(func() (registeredJobs, error) {
+		}, func() (registeredJobs, error) {
 			jobsFlag := cmd.PersistentFlags().Lookup("jobs")
 			if jobsFlag != nil {
 				return registeredJobs{
@@ -35,10 +35,11 @@ var Command = &cobra.Command{
 				return slice.ToMap(jobs), nil
 
 			}
-		}), NewIDCronJob), fx.Populate(&scheduler)).Err()
+		}), fx.Invoke(NewIDCronJob), fx.Populate(&scheduler)).Err()
 		if err != nil {
 			return errgo.Wrap(err, "fx.New")
 		}
+		scheduler.StartBlocking()
 		return nil
 	},
 }

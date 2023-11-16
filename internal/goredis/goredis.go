@@ -5,6 +5,7 @@ import (
 	_ "embed"
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/redis/go-redis/v9"
 	"github.com/sociosarbis/grpc/boilerplate/internal/config"
@@ -59,13 +60,13 @@ func NewRedisClients(c config.AppConfig) *RedisClients {
 	}
 }
 
-func (c *RedisClients) GenID(ctx context.Context, client *redis.Client, key string, dataCenterID int, workerID int) (int64, error) {
-	res, err := c.scripts.genID.Run(ctx, client, []string{key}, dataCenterID, workerID).Int64()
+func (c *RedisClients) GenID(ctx context.Context, client *redis.Client, key string, dataCenterID int, workerID int) (uint64, error) {
+	res, err := c.scripts.genID.Run(ctx, client, []string{key}, dataCenterID, workerID).Uint64Slice()
 	if err != nil {
 		logger.Err(err, "redis.GenID")
 		return 0, errorGenID
 	}
-	return res, nil
+	return res[0]<<22 | res[1], nil
 }
 
 func (c *RedisClients) AllocWorkerID(ctx context.Context, client *redis.Client, key string) (int, error) {
@@ -78,7 +79,7 @@ func (c *RedisClients) AllocWorkerID(ctx context.Context, client *redis.Client, 
 }
 
 func (c *RedisClients) ExpireWorkerID(ctx context.Context, client *redis.Client, key string) error {
-	err := c.scripts.expireWorkerID.Run(ctx, client, []string{key}).Err()
+	err := c.scripts.expireWorkerID.Run(ctx, client, []string{key}, 30*time.Minute.Milliseconds()).Err()
 	if err != nil {
 		logger.Err(err, "redis.ExpireWorkerID")
 		return errorExpireWorkerID
