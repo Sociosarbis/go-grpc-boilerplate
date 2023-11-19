@@ -14,6 +14,9 @@ type AppConfig struct {
 	RedisPort     string `yaml:"redis_port" env:"REDIS_PORT"`
 	RedisPassword string `yaml:"redis_pass" env:"REDIS_PASS"`
 
+	KafkaHost string `yaml:"kafka_host" env:"KAFKA_HOST"`
+	KafkaPort string `yaml:"kafka_port" env:"KAFKA_PORT"`
+
 	HTTPHost string `yaml:"http_host" env:"HTTP_HOST"`
 	HTTPPort int    `yaml:"http_port" env:"HTTP_PORT"`
 

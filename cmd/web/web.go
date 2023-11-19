@@ -11,6 +11,7 @@ import (
 	"github.com/sociosarbis/grpc/boilerplate/internal/config"
 	"github.com/sociosarbis/grpc/boilerplate/internal/dal"
 	"github.com/sociosarbis/grpc/boilerplate/internal/driver"
+	"github.com/sociosarbis/grpc/boilerplate/internal/gocanal"
 	"github.com/sociosarbis/grpc/boilerplate/internal/goredis"
 	"github.com/sociosarbis/grpc/boilerplate/internal/grpcmod"
 	"github.com/sociosarbis/grpc/boilerplate/internal/jwtgo"
@@ -36,11 +37,16 @@ func start() error {
 	err := fx.New(
 		fx.NopLogger,
 		config.Module,
-		fx.Provide(logger.Copy, driver.NewMysqlConnectionPool, jwtgo.NewJWTManager),
+		fx.Provide(logger.Copy, driver.NewMysqlConnectionPool, gocanal.NewCanal, jwtgo.NewJWTManager),
 		web.Module,
 		dal.Module,
 		goredis.Module,
 		grpcmod.Module,
+		fx.Invoke(func(c *gocanal.Canal) {
+			go func() {
+				c.Run()
+			}()
+		}),
 		fx.Populate(&cfg, &app, &grpcSrv, &db),
 	).Err()
 
