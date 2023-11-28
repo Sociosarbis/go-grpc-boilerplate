@@ -43,6 +43,8 @@ services:
   zookeeper:
     image: bitnami/zookeeper
     restart: unless-stopped
+    ports:
+      - "2181:2181"
     volumes:
       - ./data/zookeeper:/bitnami/zookeeper
     environment:

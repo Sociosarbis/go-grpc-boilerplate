@@ -17,6 +17,9 @@ type AppConfig struct {
 	KafkaHost string `yaml:"kafka_host" env:"KAFKA_HOST"`
 	KafkaPort string `yaml:"kafka_port" env:"KAFKA_PORT"`
 
+	ZKHost string `yaml:"zk_host" env:"ZK_HOST"`
+	ZKPort string `yaml:"zk_port" env:"ZK_PORT"`
+
 	HTTPHost string `yaml:"http_host" env:"HTTP_HOST"`
 	HTTPPort int    `yaml:"http_port" env:"HTTP_PORT"`
 
