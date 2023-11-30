@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"path"
 	"sort"
 	"sync/atomic"
 	"time"
@@ -28,7 +29,9 @@ var errNotAChildOfParent = errors.New("not a child of parent")
 
 type ZookeeperService struct {
 	conn     *zk.Conn
-	isMaster atomic.Bool
+	username string
+	password string
+	IsMaster atomic.Bool
 }
 
 func NewZookeeper(config config.AppConfig) (*ZookeeperService, error) {
@@ -37,7 +40,9 @@ func NewZookeeper(config config.AppConfig) (*ZookeeperService, error) {
 		return nil, errgo.Wrap(err, "zk.Connect")
 	}
 	s := &ZookeeperService{
-		conn: conn,
+		conn:     conn,
+		username: config.ZKUserName,
+		password: config.ZKPassword,
 	}
 	err = s.createAllParentNodes()
 	if err != nil {
@@ -63,7 +68,8 @@ func createZnode[T any](s *ZookeeperService, p string, mode createMode, data T) 
 	if err != nil {
 		return "", errgo.Wrap(err, "json.Marshal")
 	}
-	path, err := s.conn.Create(p, bytes, 0, nil)
+	acl := zk.WorldACL(zk.PermAll)
+	path, err := s.conn.Create(p, bytes, int32(mode), acl)
 	if err != nil {
 		return "", errgo.Wrap(err, fmt.Sprintf("conn.Create %s", p))
 	}
@@ -105,23 +111,24 @@ func (s *ZookeeperService) getChildren(path string) ([]string, error) {
 }
 
 func (s *ZookeeperService) getPrevSiblingNode(parentPath string, refPath string) (string, error) {
+	name := path.Base(refPath)
 	children, err := s.getChildren(parentPath)
 	if err != nil {
 		return "", err
 	}
 	sort.Strings(children)
-	i := sort.SearchStrings(children, refPath)
+	i := sort.SearchStrings(children, name)
 	if i == len(children) {
 		return "", errNotAChildOfParent
 	}
 	if i > 0 {
-		return children[i-1], nil
+		return path.Join(parentPath, children[i-1]), nil
 	} else {
 		return "", nil
 	}
 }
 
-func getLeaderNodeData[T any](s *ZookeeperService, out *T) error {
+func GetLeaderNodeData[T any](s *ZookeeperService, out *T) error {
 	ok, err := s.exists(ELECTION_NODE)
 	if err != nil {
 		return err
@@ -129,12 +136,15 @@ func getLeaderNodeData[T any](s *ZookeeperService, out *T) error {
 	if !ok {
 		return errNodeNotExists
 	}
-	children, _, err := s.conn.Children(ELECTION_NODE)
+	children, err := s.getChildren(ELECTION_NODE)
+	if err != nil {
+		return err
+	}
 	if len(children) == 0 {
 		return nil
 	}
 	sort.Strings(children)
-	err = readZNodeData[T](s, children[0], out)
+	err = readZNodeData[T](s, path.Join(ELECTION_NODE, children[0]), out)
 	if err != nil {
 		return err
 	}
@@ -152,7 +162,7 @@ func createNodeInElectionZnode[T any](s *ZookeeperService, data T) error {
 			return err
 		}
 	}
-	path, err := createZnode(s, fmt.Sprintf("%s/node", ELECTION_NODE), createModeEphemeralSequential, data)
+	path, err := createZnode(s, path.Join(ELECTION_NODE, "node"), createModeEphemeralSequential, data)
 	if err != nil {
 		return err
 	}
@@ -165,7 +175,7 @@ func (s *ZookeeperService) tryWatchPrevSibling(parentPath string, refPath string
 		return err
 	}
 	if len(prevSibling) == 0 {
-		s.isMaster.Store(true)
+		s.IsMaster.Store(true)
 		return nil
 	} else {
 		ok, _, eventsChan, err := s.conn.ExistsW(prevSibling)

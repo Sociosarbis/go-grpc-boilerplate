@@ -5,6 +5,7 @@ import (
 	"github.com/spf13/cobra"
 	"go.uber.org/dig"
 	"go.uber.org/fx"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"gorm.io/gorm"
 
@@ -18,6 +19,7 @@ import (
 	"github.com/sociosarbis/grpc/boilerplate/internal/pkg/errgo"
 	"github.com/sociosarbis/grpc/boilerplate/internal/pkg/logger"
 	"github.com/sociosarbis/grpc/boilerplate/internal/web"
+	"github.com/sociosarbis/grpc/boilerplate/internal/zookeeper"
 )
 
 var Command = &cobra.Command{ //nolint:gochecknoglobals
@@ -37,7 +39,13 @@ func start() error {
 	err := fx.New(
 		fx.NopLogger,
 		config.Module,
-		fx.Provide(logger.Copy, driver.NewMysqlConnectionPool, gocanal.NewCanal, jwtgo.NewJWTManager),
+		fx.Provide(
+			logger.Copy,
+			driver.NewMysqlConnectionPool,
+			gocanal.NewCanal,
+			zookeeper.NewZookeeper,
+			jwtgo.NewJWTManager,
+		),
 		web.Module,
 		dal.Module,
 		goredis.Module,
@@ -46,6 +54,9 @@ func start() error {
 			go func() {
 				c.Run()
 			}()
+		}),
+		fx.Invoke(func(zk *zookeeper.ZookeeperService) {
+			logger.Info("znode", zap.Bool("isMaster", zk.IsMaster.Load()))
 		}),
 		fx.Populate(&cfg, &app, &grpcSrv, &db),
 	).Err()
