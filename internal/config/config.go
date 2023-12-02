@@ -25,6 +25,9 @@ type AppConfig struct {
 	HTTPHost string `yaml:"http_host" env:"HTTP_HOST"`
 	HTTPPort int    `yaml:"http_port" env:"HTTP_PORT"`
 
+	GRPCHost string `yaml:"grpc_host" env:"GRPC_HOST"`
+	GRPCPort string `yaml:"grpc_port" env:"GRPC_PORT"`
+
 	JWTSecretKey string `yaml:"jwt_secret_key" env:"JWT_SECRET_KEY"`
 	JWTDuration  int    `yaml:"jwt_duration" env:"JWT_DURATION"`
 }

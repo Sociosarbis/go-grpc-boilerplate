@@ -12,6 +12,9 @@ import (
 	"github.com/go-zookeeper/zk"
 	"github.com/sociosarbis/grpc/boilerplate/internal/config"
 	"github.com/sociosarbis/grpc/boilerplate/internal/pkg/errgo"
+	"github.com/sociosarbis/grpc/boilerplate/internal/pkg/logger"
+	"github.com/sociosarbis/grpc/boilerplate/internal/pkg/signalgo"
+	"go.uber.org/zap"
 )
 
 const ELECTION_NODE = "/election"
@@ -166,6 +169,11 @@ func createNodeInElectionZnode[T any](s *ZookeeperService, data T) error {
 	if err != nil {
 		return err
 	}
+	endChan := signalgo.OnShutdown()
+	go func() {
+		<-endChan
+		s.conn.Close()
+	}()
 	return s.tryWatchPrevSibling(ELECTION_NODE, path)
 }
 
@@ -176,6 +184,7 @@ func (s *ZookeeperService) tryWatchPrevSibling(parentPath string, refPath string
 	}
 	if len(prevSibling) == 0 {
 		s.IsMaster.Store(true)
+		logger.Info("become master")
 		return nil
 	} else {
 		ok, _, eventsChan, err := s.conn.ExistsW(prevSibling)
@@ -185,6 +194,7 @@ func (s *ZookeeperService) tryWatchPrevSibling(parentPath string, refPath string
 		if ok {
 			go func() {
 				for msg := range eventsChan {
+					logger.Info("received zookeeper event", zap.String("type", msg.Type.String()))
 					if msg.Type == zk.EventNodeDeleted {
 						s.tryWatchPrevSibling(parentPath, refPath)
 						break

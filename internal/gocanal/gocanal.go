@@ -3,16 +3,14 @@ package gocanal
 import (
 	"context"
 	"fmt"
-	"os"
-	"os/signal"
 	"strings"
-	"syscall"
 	"time"
 
 	proto "github.com/gogo/protobuf/proto"
 	"github.com/segmentio/kafka-go"
 	"github.com/sociosarbis/grpc/boilerplate/internal/config"
 	"github.com/sociosarbis/grpc/boilerplate/internal/pkg/logger"
+	"github.com/sociosarbis/grpc/boilerplate/internal/pkg/signalgo"
 	"github.com/sociosarbis/grpc/boilerplate/internal/pkg/slice"
 	"github.com/withlin/canal-go/protocol"
 	pbe "github.com/withlin/canal-go/protocol/entry"
@@ -38,8 +36,7 @@ func NewCanal(config config.AppConfig) (*Canal, error) {
 }
 
 func (c *Canal) Run() {
-	endChan := make(chan os.Signal, 1)
-	signal.Notify(endChan, os.Interrupt, syscall.SIGTERM)
+	endChan := signalgo.OnShutdown()
 	go func() {
 		_, ok := <-endChan
 		if ok {
