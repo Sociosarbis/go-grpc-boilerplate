@@ -1,5 +1,35 @@
 package req
 
+import (
+	"encoding/json"
+
+	"github.com/go-playground/validator/v10"
+)
+
+type DateTimeConfigItem struct {
+	Enable *bool   `json:"enable,omitempty"`
+	Format *string `json:"format,omitempty" validate:"min=1"`
+}
+
+type DateTimeConfig struct {
+	Format *string         `json:"format,omitempty" validate:"min=1"`
+	Date   *DateTimeConfig `json:"date,omitempty"`
+	Time   *DateTimeConfig `json:"time,omitempty"`
+}
+
+func ValidateCmdItem(sl validator.StructLevel) {
+	cmdItem := sl.Current().Interface().(CmdItem)
+	switch cmdItem.Type {
+	case "dateTime":
+		config := DateTimeConfig{}
+		json.Unmarshal([]byte(*cmdItem.Config), &config)
+		err := sl.Validator().Struct(config)
+		if err != nil {
+			sl.ReportValidationErrors("Config", "", err.(validator.ValidationErrors))
+		}
+	}
+}
+
 type CmdCallDto struct {
 	Script string `json:"script" validate:"required,min=1"`
 	Wd     string `json:"wd" validate:"required,min=1"`
